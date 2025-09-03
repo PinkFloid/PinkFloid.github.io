@@ -3,6 +3,24 @@
 <head>
     <title>Part 1</title>
     <meta charset="UTF-8">
+    <style>
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 一行 5 张 */
+            gap: 20px;
+            justify-items: center; /* 每个格子里的内容居中 */
+            }
+
+        .gallery figure {
+        text-align: center;
+        }
+
+        .gallery img {
+        width: 150px;
+        height: auto;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Here is part1</h1>
