@@ -69,29 +69,6 @@
     width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
     }
 
-        /* 两栏：左自适应，右固定宽度 */
-    .split {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 540px; /* 右栏 360px，可改 */
-    gap: 24px;
-    align-items: start;
-    }
-
-    .gallery {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    }
-    .gallery img {
-    width: 30%;
-    height: auto;        /* 按原比例缩放 */
-    border: none;
-    border-radius: 0px;
-    display: block;
-    }
-
-
-
 
 
   </style>
@@ -100,34 +77,22 @@
   <h1>Images of the Russian Empire:</h1><br>
   <h2 class="subtitle">Colorizing the Prokudin-Gorskii photo collection</h2>
 
-    <hr class="sep">
-
-    <div class="split offset">
-    <!-- 左侧：Overview 文本卡片 -->
-    <section class="card">
-        <h2 style="margin:0 0 .5rem 0;">Overview</h2>
-        <p>
-        This project reconstructs color photographs from the digitized
-        <strong>Prokudin-Gorskii</strong> glass plates. Each plate contains three
-        vertically stacked grayscale exposures taken through blue, green, and red
-        filters. We extract these channels, align them with a simple (x, y)
-        translation model, and compose a single RGB image with minimal artifacts.
-        </p>
-    </section>
-
-    <!-- 右侧：1×4 纵向图片 -->
-
-    <div class="gallery">
-    <img src="imgs/p1.jpg" alt="Result 1">
-    <img src="imgs/p2.jpg" alt="Result 2">
-    <img src="imgs/p3.jpg" alt="Result 3">
-    <img src="imgs/p4.jpg" alt="Result 4">
-    </div>
-
-    <hr class="sep">
-
-    <h2 class="offset">Step1: Automatic Cut</h2>
-
+  <hr class="sep">
+  <section class="card">
+  <h2 style="margin:0 0 .5rem 0;">Overview</h2>
+  <img src="imgs/p1.jpg" alt="Overview Image" 
+       style="width:100%; border-radius:8px; margin-bottom:16px;">
+  <p>
+    This project reconstructs color photographs from the digitized
+    <strong>Prokudin-Gorskii</strong> glass plates. Each plate contains three
+    vertically stacked grayscale exposures taken through blue, green, and red
+    filters. We extract these channels, align them with a simple (x, y)
+    translation model, and compose a single RGB image with minimal artifacts.
+  </p>
+  </section>
+  <hr class="sep">\
+  
+  <h2 style="margin:0 0 .5rem 0;" class="offset">Step1: Automatic Cut</h2>
 
   <input placeholder="输入框示例" />
 </body>
