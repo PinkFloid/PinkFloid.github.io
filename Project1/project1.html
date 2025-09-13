@@ -45,7 +45,7 @@
     }
 
     .card p {
-    max-width: 65ch;           /* 约 65 个字符的行宽，更易读 */
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
     line-height: 1.7;
     margin: 0;
     }
@@ -69,6 +69,44 @@
     width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
     }
 
+    .three-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 8px;                    /* 图片间隙 */
+    }
+
+    .three-imgs img {
+    width: 28%;
+    height: 210px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs img {
+    width: 40%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 40%;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
 
 
   </style>
@@ -79,9 +117,16 @@
 
   <hr class="sep">
   <section class="card">
+    <div style="display:flex; justify-content:center; gap:16px;">
+    <img src="imgs/p1.jpg" alt="img1" 
+         style="height:200px; flex:1; object-fit:cover; border-radius:8px;">
+    <img src="imgs/p2.jpg" alt="img2" 
+         style="height:200px; flex:1; object-fit:cover; border-radius:8px;">
+    <img src="imgs/p3.jpg" alt="img3" 
+         style="height:200px; flex:1; object-fit:cover; border-radius:8px;">
+  </div>
+
   <h2 style="margin:0 0 .5rem 0;">Overview</h2>
-  <img src="imgs/p1.jpg" alt="Overview Image" 
-       style="width:100%; border-radius:8px; margin-bottom:16px;">
   <p>
     This project reconstructs color photographs from the digitized
     <strong>Prokudin-Gorskii</strong> glass plates. Each plate contains three
@@ -90,10 +135,219 @@
     translation model, and compose a single RGB image with minimal artifacts.
   </p>
   </section>
-  <hr class="sep">\
+  <hr class="sep">
   
-  <h2 style="margin:0 0 .5rem 0;" class="offset">Step1: Automatic Cut</h2>
+  <h2 class="offset">Step1: Automatic Cut</h2>
+  <p class="offset">
+    To colorize the images, we must first extract the three channels completely. 
+    My chosen method is edge detection.
+    I start by applying Gaussian blur to reduce noise and ensure accurate edge extraction. 
+    Then, I dilate the edges to obtain clearer boundaries, select the largest contour as the main outline, 
+    and use it to extract the three color channels.
+  </p>
+  <!-- <hr class="sep">
+  <p class="offset">
+    code snip
+  </p>
+  <img src="imgs/code_divider.jpg" alt="Overview Image"
+     style="width:80%; border-radius:8px; margin:0 auto 16px auto; display:block;"> -->
 
-  <input placeholder="输入框示例" />
+
+</div>
+<hr class="sep">
+<p class="offset">
+    divide results
+  </p>
+  <div class="three-imgs">
+  <img src="imgs/red_siren.jpg">
+  <img src="imgs/green_siren.jpg">
+  <img src="imgs/blue_siren.jpg">
+</div>
+
+<hr class="sep">
+  
+  <h2 class="offset">Step2: Automatic Aligning Images</h2>
+  <p class="offset">
+    
+ The first method I used is </strong>NCC (Normalized Cross-Correlation)</strong>. <br>
+ The basic principle of NCC is to slide an image patch over another image, 
+ compute the correlation at different positions, 
+ and normalize the result so that it falls within the range (-1, 1). 
+ A value closer to 1 indicates a higher degree of similarity between the two regions. 
+ Compared to </strong>SSD (Sum of Squared Differences)</strong>, 
+ NCC not only considers pixel differences but is also more robust to variations in brightness and contrast, 
+ which allows it to perform better under inconsistent lighting conditions. <br><br>
+
+  </p>
+  <hr class="sep">
+  <p class="offset">
+    Left: Siren in NCC; Right: Emir in NCC
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/cropped_siren.jpg">
+  <img src="imgs/cropped_emir.jpg">
+</div>
+
+<hr class="sep">
+
+<p class="offset">
+    
+ It can be observed that the alignment result for the Emir photograph is not very satisfactory. 
+ This is mainly due to significant brightness differences and the complexity of local structures, 
+ which make traditional NCC matching vulnerable to interference. 
+ To address this issue, I adopted an edge-based improvement: 
+ first extracting the gradient changes in the horizontal and vertical directions, 
+ and then performing NCC matching using pixel-wise gradient features. 
+ By reducing the influence of brightness variations and emphasizing structural information, 
+ this method achieves more accurate and stable alignment results.
+
+</p>
+
+</p>
+  <hr class="sep">
+  <p class="offset">
+    Left: Siren in Edge-NCC; Right: Emir in Edge-NCC
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/cropped_siren_edge.jpg">
+  <img src="imgs/cropped_emir_edge.jpg">
+</div>
+
+<hr class="sep">
+  
+  <h2 class="offset">Step3: Image Pyramid to Speed Up</h2>
+  <p class="offset">
+    
+ The Image Pyramid is a multi-resolution image representation method that 
+ generates a series of image levels from high to low resolution by repeatedly downsampling or 
+ blurring the original image, forming a pyramid-like structure. 
+ I mainly used the Gaussian Pyramid, 
+ where each level is obtained by applying Gaussian blur followed by downsampling, 
+ resulting in progressively lower-resolution images for multi-scale processing. 
+ This allows the algorithm to perform coarse alignment or matching at lower resolutions and 
+ then gradually refine the optimization at higher resolutions, 
+ thereby improving both efficiency and robustness.
+
+  </p>
+  <hr class="sep">
+
+  <!-- </p>
+  <div class="two-imgs-height">
+  <img src="imgs/code_pyramid.jpg">
+  <img src="imgs/pyramid.jpg">
+</div> -->
+
+<img src="imgs/pyramid.jpg" alt="Overview Image"
+     style="width:80%; border-radius:8px; margin:0 auto 16px auto; display:block;">
+
+<hr class="sep">
+
+  
+  <h2 class="offset">Setp4: Auto Contrast and White Balance</h2>
+  <p class="offset">
+    
+  To make our photos appear more natural and realistic, 
+  we can also apply white balance correction and enhance the contrast, 
+  thereby improving the overall visual quality.
+
+  </p>
+  </p>
+  <hr class="sep">
+  <p class="offset">
+    Left: Normal; Middle: Normal+White Balance Right:Normal+White Balance+Contrast Enhance
+  </p>
+  <div class="three-imgs">
+  <img src="imgs/cropped_harvesters.jpg">
+  <img src="imgs/cropped_harvesters_White.jpg">
+  <img src="imgs/cropped_harvesters_White_contrast.jpg">
+</div>
+
+<br>
+<br><br><br><br>
+
+
+<hr class="sep">
+
+  
+  <h2 class="offset">Results Gallery</h2>
+
+  </p>
+  <hr class="sep">
+  <p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -41 , -13 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -26 , 22 ]
+  </p>
+  </p>
+  <p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ -7 , -4 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ 12 , 36 ]
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/cropped_church.jpg">
+  <img src="imgs/cropped_harvesters_White.jpg">
+</div>
+<hr class="sep">
+
+<p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -23 , 17 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -24 , -17 ]
+  </p>
+  </p>
+  <p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ 25 , 23 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ 26 , -29 ]
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/cropped_icon.jpg">
+  <img src="imgs/cropped_lugano.jpg">
+</div>
+
+<hr class="sep">
+<p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -11 , 13 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Green channel offset: [ -119 , 187 ]
+  </p>
+  </p>
+  <p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ 46 , 9 ]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Red channel offset: [ -22 , 198 ]
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/cropped_three_generations.jpg">
+  <img src="imgs/cropped_self_portrait.jpg">
+</div>
+
+
+
 </body>
 </html>
