@@ -40,13 +40,27 @@
     h1{ text-align:center; font-weight:700; margin:0; }
     h2.subtitle{ text-align:center; font-weight:400; font-size:80px; margin:6px 0 0; }
 
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
   </style>
 </head>
 <body>
   <h1>Images of the Russian Empire:</h1><br>
-  <h2>Colorizing the Prokudin-Gorskii photo collection</h2>
+  <h2 class="subtitle">Colorizing the Prokudin-Gorskii photo collection</h2>
 
-  <p>这是示例段落。<a href="#">这是链接</a>。</p>
+  <hr class="sep">
+  <p class="indent">这是示例段落。<a href="#">这是链接</a>。</p>
+  <hr class="sep">
+
   <input placeholder="输入框示例" />
 </body>
 </html>
