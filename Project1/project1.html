@@ -40,6 +40,8 @@
     .card {
     margin: 16px 0;
     padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
     }
 
     .card p {
@@ -62,6 +64,13 @@
         margin: 24px 8vw;   /* 与段落左边对齐 */
         }
 
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+
+
   </style>
 </head>
 <body>
@@ -79,9 +88,9 @@
     translation model, and compose a single RGB image with minimal artifacts.
   </p>
   </section>
-
-
-  <hr class="sep">
+  <hr class="sep">\
+  
+  <h2 style="margin:0 0 .5rem 0;" class="offset">Step1: Automatic Cut</h2>
 
   <input placeholder="输入框示例" />
 </body>
