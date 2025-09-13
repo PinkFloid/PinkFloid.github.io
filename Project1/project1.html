@@ -58,7 +58,29 @@
   <h2 class="subtitle">Colorizing the Prokudin-Gorskii photo collection</h2>
 
   <hr class="sep">
-  <p class="indent">这是示例段落。<a href="#">这是链接</a>。</p>
+  <section class="card">
+  <h2 style="margin:0 0 .5rem 0;">Overview</h2>
+  <p>
+    This project reconstructs color photographs from the digitized
+    <strong>Prokudin-Gorskii</strong> glass plates. Each plate contains three
+    vertically stacked grayscale exposures taken through blue, green, and red
+    filters. We extract these channels, align them with a simple (x, y)
+    translation model, and compose a single RGB image with minimal artifacts.
+  </p>
+  <ul>
+    <li><strong>Channel extraction:</strong> split plate into B/G/R images.</li>
+    <li><strong>Preprocess:</strong> trim borders; optional denoise.</li>
+    <li><strong>Alignment:</strong> search best (Δx, Δy) per channel (e.g., NCC / gradient-based), assuming translation only.</li>
+    <li><strong>Efficiency:</strong> coarse-to-fine pyramid for full-size <code>.tif</code> plates.</li>
+    <li><strong>Compose:</strong> stack aligned B, G, R; optional white balance/contrast.</li>
+  </ul>
+  <p style="margin-top:.5rem;">
+    Start with <code>monastery.jpg</code> and <code>cathedral.jpg</code> (or downsized plates) for
+    the naive version, then run the final pipeline on the full-resolution images.
+  </p>
+  </section>
+
+
   <hr class="sep">
 
   <input placeholder="输入框示例" />
