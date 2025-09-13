@@ -72,23 +72,25 @@
         /* 两栏：左自适应，右固定宽度 */
     .split {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px; /* 右栏 360px，可改 */
+    grid-template-columns: minmax(0, 1fr) 540px; /* 右栏 360px，可改 */
     gap: 24px;
     align-items: start;
     }
 
     .gallery {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     }
     .gallery img {
     width: 100%;
     height: auto;        /* 按原比例缩放 */
-    border: 1px solid #333;
-    border-radius: 8px;
+    border: none;
+    border-radius: 0px;
     display: block;
     }
+
+
 
 
 
