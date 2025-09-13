@@ -77,19 +77,17 @@
     align-items: start;
     }
 
-    /* 右侧 2×2 网格 */
     .gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     }
     .gallery img {
-    display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;  /* 统一成方图；不需要可删 */
-    object-fit: cover;
+    height: auto;        /* 按原比例缩放 */
     border: 1px solid #333;
     border-radius: 8px;
+    display: block;
     }
 
 
@@ -115,7 +113,7 @@
         </p>
     </section>
 
-    <!-- 右侧：四张图片 -->
+    <!-- 右侧：1×4 纵向图片 -->
     <aside class="card">
         <div class="gallery">
         <img src="imgs/p1.jpg" alt="Result 1">
@@ -128,8 +126,6 @@
 
     <hr class="sep">
 
-  
-  <h2 class="offset">Step1: Automatic Cut</h2>
 
   <input placeholder="输入框示例" />
 </body>
