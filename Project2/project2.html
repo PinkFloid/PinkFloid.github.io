@@ -1,0 +1,131 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- 移动端地址栏也用深色 -->
+  <meta name="theme-color" content="#000000" />
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .three-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 8px;                    /* 图片间隙 */
+    }
+
+    .three-imgs img {
+    width: 28%;
+    height: 540px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs img {
+    width: 40%;
+    height: 880px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 40%;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>Filters Frequencies and Multi-Resolution Blending</h1><br>
+
+     <hr class="sep">
+<div class="two-imgs">
+  <img src="imgs/four_conv.png">
+  <img src="imgs/two_conv.png">
+</div>
+  
+  <h2 class="offset">Part1.1: Convolution of Myself</h2>
+  <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  In this section, I implement 2D convolution from scratch in <strong>NumPy</strong>. I start with a <em>four-loop</em> baseline (outer loops over output coordinates <code>(i, j)</code>, inner loops over kernel indices <code>(u, v)</code>), using zero-padding to preserve “same” output size. I then vectorize the inner two loops into a <em>two-loop</em> version by taking the local image patch and computing an element-wise multiply-and-sum with the kernel:
+  <code>out[i, j] = &Sigma;<sub>u,v</sub> patch[u,v] &middot; K[u,v]</code>. I extend this to <code>RGB</code> by convolving each channel independently and stacking the results. Boundaries are handled with <strong>zero-padding</strong>. I also apply finite-difference operators <code>D<sub>x</sub> = [1, 0, -1]</code> and <code>D<sub>y</sub> = [1; 0; -1]</code> to obtain horizontal and vertical gradient responses, and I numerically verify my outputs against <code>scipy.signal.convolve2d(..., mode="same")</code>. Finally, I smooth a grayscale selfie with a <strong>9×9 box filter</strong> to demonstrate convolution-based blurring.
+</p>
+
+
+</body>
+</html>
