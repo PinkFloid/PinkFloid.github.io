@@ -142,7 +142,17 @@
   <p class="offset">
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     Original
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -205,12 +215,14 @@
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
   <strong>Details.</strong> Following the assignment spec, I experimented with several image pairs and tuned the cutoffs so that <code>σ<sub>low</sub> &gt; σ<sub>high</sub></code> (low-pass much smoother than high-pass). Low-pass uses a standard Gaussian; high-pass is implemented as <code>I − (Gσ * I)</code> (equivalently an impulse minus Gaussian). Proper alignment is crucial for perceptual grouping, so all pairs are registered before filtering. For the best example, I present inputs, filtered components, the final hybrid, and their 2D FFT log plots (computed with <code>np.fft.fft2</code> + <code>fftshift</code>) to verify that low/high frequencies are distributed as intended. I produce 2–3 hybrids in total, each showing the two inputs and the resulting hybrid image.
 </p>
+<h2 class="offset">Original Input</h2>
+
 <div class="two-imgs">
   <img src="imgs/Autobots.jpeg">
   <img src="imgs/Decepticon.jpeg">
 </div>
  <hr class="sep">
-
+<h2 class="offset">lowpass of 1 ,highpass of 2 ,and hybird</h2>
 <div class="three-imgs">
   <img src="imgs/lowpass_from_img1.png">
   <img src="imgs/highpass_from_img2_vis.png">
@@ -218,19 +230,14 @@
 </div>
  <hr class="sep">
 
-<div class="three-imgs">
-  <img src="imgs/lowpass_from_img1.png">
-  <img src="imgs/highpass_from_img2_vis.png">
-  <img src="imgs/Transformer.png">
-</div>
- <hr class="sep">
-
+<h2 class="offset">input fft of 1, and input fft of 2</h2>
 <div class="two-imgs">
   <img src="imgs/fft_inputA.png">
   <img src="imgs/fft_inputB.png">
 </div>
  <hr class="sep">
 
+<h2 class="offset">lowpass fft of 1, highpass fft of 2, and fft of hybrid</h2>
 <div class="three-imgs">
   <img src="imgs/fft_lowpassA.png">
   <img src="imgs/fft_highpassB_vis.png">
