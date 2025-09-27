@@ -95,6 +95,13 @@
     border-radius: 8px;
     }
 
+    .two-imgs-high-quality img {
+    width: 24%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
     .two-imgs-height {
     display: flex;                /* 横排 */
     justify-content: center;      /* 居中 */
@@ -136,11 +143,12 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     Blur
   </p>
-  <div class="two-imgs">
+  <div class="two-imgs-high-quality">
   <img src="imgs/myself.jpg">
   <img src="imgs/blur.jpg">
 </div>
 </p>
+ <hr class="sep">
 
 <h2 class="offset">Part1.2: Edge Extraction of Cameraman</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> I compute horizontal and vertical partial derivatives of the cameraman image by convolving with the finite-difference kernels <code>D<sub>x</sub> = [1, 0, −1]</code> and <code>D<sub>y</sub> = [1; 0; −1]</code>, obtaining <code>I<sub>x</sub></code> and <code>I<sub>y</sub></code>. The gradient magnitude is then <code>‖∇I‖ = √(I<sub>x</sub><sup>2</sup> + I<sub>y</sub><sup>2</sup>)</code>, and I binarize it with a threshold chosen qualitatively to keep true edges while suppressing noise (<code>T ≈ 25</code> works well here). </p>
@@ -148,6 +156,7 @@
   <img src="imgs/grad_mag.jpg">
   <img src="imgs/edge_extraction.jpg">
 </div>
+ <hr class="sep">
 
 <h2 class="offset">Part1.3: Edge Extraction of Cameraman With Gaussian First</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Part 1.3 — Derivative of Gaussian (DoG) Filter.</strong> I compared two pipelines: (1) blur the image with a Gaussian and then apply the finite-difference kernels <code>D<sub>x</sub>, D<sub>y</sub></code>; (2) precompute the DoG kernels <code>DoG<sub>x</sub>=G*D<sub>x</sub></code>, <code>DoG<sub>y</sub>=G*D<sub>y</sub></code> and convolve the image once. By associativity of convolution, they are theoretically equivalent: <code>(G * I) * D = I * (G * D)</code>. After matching padding and delaying any clipping/rounding to the end, the results are indistinguishable: the difference image between the two outputs is (near) all zeros and renders as a black image. Any tiny discrepancies, if visible, come only from boundary handling or uint8 rounding, not from the method itself. Hence, both approaches produce the same gradients and the same thresholded edge map. </p>
@@ -162,6 +171,7 @@
   <img src="imgs/dog_grad.jpg">
   <img src="imgs/dog_edge_extraction.jpg">
 </div>
+ <hr class="sep">
 
 <h2 class="offset">Part2.1: Image Sharpening</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Implementation.</strong> I implement image sharpening via an unsharp mask. First, I build a normalized 2D Gaussian kernel using <code>cv2.getGaussianKernel</code> and convolve it with the input (per-channel) using my <code>two_loops_conv_RGB</code>, operating in <code>float32</code> throughout to avoid integer clipping. The blurred image <code>G * I</code> is subtracted from the original to obtain the high-frequency component <code>HF = I − (G * I)</code>. The final sharpened result is <code>I' = I + α · HF = (1+α)I − α(G * I)</code>, where I set <code>α = 1.5</code> (tunable). For visualization, I also save <code>HF</code> re-centered at 128 to reveal positive/negative details. </p>
@@ -175,6 +185,7 @@
   <img src="imgs/mountain.jpg">
   <img src="imgs/sharp_mountain.png">
 </div>
+ <hr class="sep">
 
 <h2 class="offset">Part2.2: Image Blending</h2>
 <div class="two-imgs">
@@ -192,29 +203,34 @@
   <img src="imgs/Autobots.jpeg">
   <img src="imgs/Decepticon.jpeg">
 </div>
+ <hr class="sep">
 
 <div class="three-imgs">
   <img src="imgs/lowpass_from_img1.png">
   <img src="imgs/highpass_from_img2_vis.png">
   <img src="imgs/Transformer.png">
 </div>
+ <hr class="sep">
 
 <div class="three-imgs">
   <img src="imgs/lowpass_from_img1.png">
   <img src="imgs/highpass_from_img2_vis.png">
   <img src="imgs/Transformer.png">
 </div>
+ <hr class="sep">
 
 <div class="two-imgs">
   <img src="imgs/fft_inputA.png">
   <img src="imgs/fft_inputB.png">
 </div>
+ <hr class="sep">
 
 <div class="three-imgs">
   <img src="imgs/fft_lowpassA.png">
   <img src="imgs/fft_highpassB_vis.png">
   <img src="imgs/fft_hybrid.png">
 </div>
+ <hr class="sep">
 
 <h2 class="offset">Part2.4: Multi-Resolution Blending</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Multi-resolution blending (stack version).</strong> I implement Burt–Adelson style blending using <em>Gaussian</em> and <em>Laplacian</em> <u>stacks</u> (no downsampling). For each grayscale input, I build a Gaussian stack by repeatedly low-pass filtering with a 2D Gaussian, then form the Laplacian stack as adjacent-level differences plus the final residual. I also construct a progressive mask stack by blurring a user-selected binary mask with increasing σ at deeper levels, which widens the transition band. At every level <code>ℓ</code> I blend the two Laplacian images with the corresponding mask <code>R<sub>ℓ</sub></code> via <code>L<sub>blend,ℓ</sub> = R<sub>ℓ</sub>·L<sub>A,ℓ</sub> + (1−R<sub>ℓ</sub>)·L<sub>B,ℓ</sub></code>, and reconstruct the final result by summing all blended levels. Using stacks instead of pyramids avoids resampling artifacts while the level-wise, smoothly blurred masks eliminate hard seams between the two sources. The output is saved as <code>Sabortan.png</code>. </p>
