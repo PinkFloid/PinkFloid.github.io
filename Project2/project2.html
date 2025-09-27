@@ -254,9 +254,9 @@
 
 <h2 class="offset">Part2.4: Multi-Resolution Blending</h2>
 <img src="imgs/overview_stacks.png" style="max-width:100%; height:auto;">
+<img src="imgs/orapple.png" style="max-width:100%; height:auto;">
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Multi-resolution blending (stack version).</strong> I implement Burt–Adelson style blending using <em>Gaussian</em> and <em>Laplacian</em> <u>stacks</u> (no downsampling). For each grayscale input, I build a Gaussian stack by repeatedly low-pass filtering with a 2D Gaussian, then form the Laplacian stack as adjacent-level differences plus the final residual. I also construct a progressive mask stack by blurring a user-selected binary mask with increasing σ at deeper levels, which widens the transition band. At every level <code>ℓ</code> I blend the two Laplacian images with the corresponding mask <code>R<sub>ℓ</sub></code> via <code>L<sub>blend,ℓ</sub> = R<sub>ℓ</sub>·L<sub>A,ℓ</sub> + (1−R<sub>ℓ</sub>)·L<sub>B,ℓ</sub></code>, and reconstruct the final result by summing all blended levels. Using stacks instead of pyramids avoids resampling artifacts while the level-wise, smoothly blurred masks eliminate hard seams between the two sources. The output is saved as <code>Sabortan.png</code>. </p>
-<div class="three-imgs">
-  <img src="imgs/orapple.png">
+<div class="two-imgs">
   <img src="imgs/guitar.png">
   <img src="imgs/Sabortan.png">
 </div>
