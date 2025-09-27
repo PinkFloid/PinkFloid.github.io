@@ -89,7 +89,7 @@
     }
 
     .two-imgs img {
-    width: 40%;
+    width: 44%;
     height: 880px;
     object-fit: cover;
     border-radius: 8px;
@@ -124,8 +124,110 @@
   <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
   In this section, I implement 2D convolution from scratch in <strong>NumPy</strong>. I start with a <em>four-loop</em> baseline (outer loops over output coordinates <code>(i, j)</code>, inner loops over kernel indices <code>(u, v)</code>), using zero-padding to preserve “same” output size. I then vectorize the inner two loops into a <em>two-loop</em> version by taking the local image patch and computing an element-wise multiply-and-sum with the kernel:
   <code>out[i, j] = &Sigma;<sub>u,v</sub> patch[u,v] &middot; K[u,v]</code>. I extend this to <code>RGB</code> by convolving each channel independently and stacking the results. Boundaries are handled with <strong>zero-padding</strong>. I also apply finite-difference operators <code>D<sub>x</sub> = [1, 0, -1]</code> and <code>D<sub>y</sub> = [1; 0; -1]</code> to obtain horizontal and vertical gradient responses, and I numerically verify my outputs against <code>scipy.signal.convolve2d(..., mode="same")</code>. Finally, I smooth a grayscale selfie with a <strong>9×9 box filter</strong> to demonstrate convolution-based blurring.
+
+  <h2 class="offset">Results</h2>
+  <p class="offset">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Original
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Blur
+  </p>
+  <div class="two-imgs">
+  <img src="imgs/myself.jpg">
+  <img src="imgs/blur.jpg">
+</div>
 </p>
 
+<h2 class="offset">Part1.2: Edge Extraction of Cameraman</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> I compute horizontal and vertical partial derivatives of the cameraman image by convolving with the finite-difference kernels <code>D<sub>x</sub> = [1, 0, −1]</code> and <code>D<sub>y</sub> = [1; 0; −1]</code>, obtaining <code>I<sub>x</sub></code> and <code>I<sub>y</sub></code>. The gradient magnitude is then <code>‖∇I‖ = √(I<sub>x</sub><sup>2</sup> + I<sub>y</sub><sup>2</sup>)</code>, and I binarize it with a threshold chosen qualitatively to keep true edges while suppressing noise (<code>T ≈ 25</code> works well here). </p>
+<div class="two-imgs">
+  <img src="imgs/grad_mag.jpg">
+  <img src="imgs/edge_extraction.jpg">
+</div>
+
+<h2 class="offset">Part1.3: Edge Extraction of Cameraman With Gaussian First</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Part 1.3 — Derivative of Gaussian (DoG) Filter.</strong> I compared two pipelines: (1) blur the image with a Gaussian and then apply the finite-difference kernels <code>D<sub>x</sub>, D<sub>y</sub></code>; (2) precompute the DoG kernels <code>DoG<sub>x</sub>=G*D<sub>x</sub></code>, <code>DoG<sub>y</sub>=G*D<sub>y</sub></code> and convolve the image once. By associativity of convolution, they are theoretically equivalent: <code>(G * I) * D = I * (G * D)</code>. After matching padding and delaying any clipping/rounding to the end, the results are indistinguishable: the difference image between the two outputs is (near) all zeros and renders as a black image. Any tiny discrepancies, if visible, come only from boundary handling or uint8 rounding, not from the method itself. Hence, both approaches produce the same gradients and the same thresholded edge map. </p>
+
+  <h2 class="offset">Seperated Opreation</h2>
+<div class="two-imgs">
+  <img src="imgs/dog_grad.jpg">
+  <img src="imgs/dog_edge_extraction.jpg">
+</div>
+<h2 class="offset">DOG</h2>
+<div class="two-imgs">
+  <img src="imgs/dog_grad.jpg">
+  <img src="imgs/dog_edge_extraction.jpg">
+</div>
+
+<h2 class="offset">Part2.1: Image Sharpening</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Implementation.</strong> I implement image sharpening via an unsharp mask. First, I build a normalized 2D Gaussian kernel using <code>cv2.getGaussianKernel</code> and convolve it with the input (per-channel) using my <code>two_loops_conv_RGB</code>, operating in <code>float32</code> throughout to avoid integer clipping. The blurred image <code>G * I</code> is subtracted from the original to obtain the high-frequency component <code>HF = I − (G * I)</code>. The final sharpened result is <code>I' = I + α · HF = (1+α)I − α(G * I)</code>, where I set <code>α = 1.5</code> (tunable). For visualization, I also save <code>HF</code> re-centered at 128 to reveal positive/negative details. </p>
+<div class="three-imgs">
+  <img src="imgs/taj.jpg">
+  <img src="imgs/sharp.png">
+   <img src="imgs/sharp_sharp.png">
+</div>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Observation.</strong> Compared with the original (and the Gaussian-blurred version), the sharpened image exhibits crisper edges and higher local contrast around fine structures (e.g., contours and textures). Edge transitions are steeper and details that were softened by blur reappear more clearly, while flat regions remain largely unchanged. Increasing <code>α</code> strengthens perceived sharpness but can introduce ringing or amplify noise; the chosen setting provides a noticeable, clean enhancement with visibly more pronounced boundaries. </p>
+<div class="two-imgs">
+  <img src="imgs/mountain.jpg">
+  <img src="imgs/sharp_mountain.png">
+</div>
+
+<h2 class="offset">Part2.2: Image Blending</h2>
+<div class="two-imgs">
+  <img src="imgs/Transformer.png">
+  <img src="imgs/feng_cheng.png">
+</div>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  <strong>Method summary.</strong> I first align the two inputs with <code>align_images</code> and convert them to grayscale for controlled filtering. The “base” image is low-pass filtered with a 2D Gaussian of standard deviation <code>σ<sub>low</sub></code>, while the “detail” image is high-pass filtered by subtracting its Gaussian blur with <code>σ<sub>high</sub></code> (and zero-centering the high-frequency term to avoid bias). The hybrid is formed by a linear blend <code>Hybrid = gain_low · Low + gain_high · High</code>, followed by clipping to <code>[0,255]</code>. I also export intermediates (low-pass, blur, high-pass visualization) and their log-magnitude FFTs to illustrate frequency content.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  <strong>Details.</strong> Following the assignment spec, I experimented with several image pairs and tuned the cutoffs so that <code>σ<sub>low</sub> &gt; σ<sub>high</sub></code> (low-pass much smoother than high-pass). Low-pass uses a standard Gaussian; high-pass is implemented as <code>I − (Gσ * I)</code> (equivalently an impulse minus Gaussian). Proper alignment is crucial for perceptual grouping, so all pairs are registered before filtering. For the best example, I present inputs, filtered components, the final hybrid, and their 2D FFT log plots (computed with <code>np.fft.fft2</code> + <code>fftshift</code>) to verify that low/high frequencies are distributed as intended. I produce 2–3 hybrids in total, each showing the two inputs and the resulting hybrid image.
+</p>
+<div class="two-imgs">
+  <img src="imgs/Autobots.jpeg">
+  <img src="imgs/Decepticon.jpeg">
+</div>
+
+<div class="three-imgs">
+  <img src="imgs/lowpass_from_img1.png">
+  <img src="imgs/highpass_from_img2_vis.png">
+  <img src="imgs/Transformer.png">
+</div>
+
+<div class="three-imgs">
+  <img src="imgs/lowpass_from_img1.png">
+  <img src="imgs/highpass_from_img2_vis.png">
+  <img src="imgs/Transformer.png">
+</div>
+
+<div class="two-imgs">
+  <img src="imgs/fft_inputA.png">
+  <img src="imgs/fft_inputB.png">
+</div>
+
+<div class="three-imgs">
+  <img src="imgs/fft_lowpassA.png">
+  <img src="imgs/fft_highpassB_vis.png">
+  <img src="imgs/fft_hybrid.png">
+</div>
+
+<h2 class="offset">Part2.4: Multi-Resolution Blending</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>Multi-resolution blending (stack version).</strong> I implement Burt–Adelson style blending using <em>Gaussian</em> and <em>Laplacian</em> <u>stacks</u> (no downsampling). For each grayscale input, I build a Gaussian stack by repeatedly low-pass filtering with a 2D Gaussian, then form the Laplacian stack as adjacent-level differences plus the final residual. I also construct a progressive mask stack by blurring a user-selected binary mask with increasing σ at deeper levels, which widens the transition band. At every level <code>ℓ</code> I blend the two Laplacian images with the corresponding mask <code>R<sub>ℓ</sub></code> via <code>L<sub>blend,ℓ</sub> = R<sub>ℓ</sub>·L<sub>A,ℓ</sub> + (1−R<sub>ℓ</sub>)·L<sub>B,ℓ</sub></code>, and reconstruct the final result by summing all blended levels. Using stacks instead of pyramids avoids resampling artifacts while the level-wise, smoothly blurred masks eliminate hard seams between the two sources. The output is saved as <code>Sabortan.png</code>. </p>
+<div class="two-imgs">
+  <img src="imgs/S.png">
+  <img src="imgs/Sabortan.png">
+</div>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> <strong>How I did the color version.</strong> I extend the Laplacian–stack blender to RGB by building Gaussian and Laplacian <em>stacks per channel</em> with <code>two_loops_conv_RGB</code> (work in <code>float32</code>, shape <code>H×W×3</code>). The blend mask <code>R</code> is obtained via <code>selectR</code> on the source image, converted to grayscale if needed and normalized to <code>[0,1]</code>; then I create a progressive Gaussian mask stack with increasing <code>σ</code> (<code>sigma0</code>, <code>grow</code>) to widen the transition at deeper levels. At each level ℓ, I blend the two Laplacian images with an explicitly broadcast mask <code>gr[..., None]</code>: <code>L<sub>blend,ℓ</sub> = gr · L<sub>A,ℓ</sub> + (1 − gr) · L<sub>B,ℓ</sub></code>. The final result is reconstructed by summing all blended levels, clipped to <code>[0,255]</code>, and saved as <code>Sabortan_color.png</code>. Doing it channel-wise preserves chroma while the smoothed mask eliminates seams, yielding a clean, color-consistent blend. </p>
+<div class="two-imgs">
+  <img src="imgs/Sabortan.png">
+  <img src="imgs/S1_color.png">
+</div>
 
 </body>
 </html>
