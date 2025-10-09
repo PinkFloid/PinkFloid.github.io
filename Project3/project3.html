@@ -1,0 +1,199 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- 移动端地址栏也用深色 -->
+  <meta name="theme-color" content="#000000" />
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .three-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 8px;                    /* 图片间隙 */
+    }
+
+    .three-imgs img {
+    width: 28%;
+    height: 540px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs img {
+    width: 44%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-high-quality {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 40px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-high-quality img {
+    width: 64%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 45%;
+    height: 1400px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>Image Warping and Mosaicing</h1><br>
+
+     <hr class="sep">
+</div>
+  
+  <h2 class="offset">Part1: Shoot the Picture</h2>
+  <div class="two-imgs">
+  <img src="imgs\house1.jpg">
+  <img src="imgs\house2.jpg">
+  
+</div>
+<hr class="sep">
+  <div class="two-imgs">
+  <img src="imgs\toothpaste1.jpg">
+  <img src="imgs\toothpaste2.jpg">
+</div>
+<hr class="sep">
+<h2 class="offset">Part2: Recover Homographies</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Here is my code.
+</p>
+<img src="imgs\code1.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  I manually selected the corresponding feature points between the two images. The blue circles indicate the matched pairs used for homography estimation
+</p>
+<div class="two-imgs">
+  <img src="imgs\house1_cor.png">
+  <img src="imgs\house2_cor.png">
+</div>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Here is the matrix of A and matrix of H.
+</p>
+<img src="imgs\A_matrix.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+<img src="imgs\H_matrix.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+
+<h2 class="offset">Part3: Wrap the Images</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  The left image was generated using warpImageNearestNeighbor, and the right image using warpImageBilinear. The result shows that the left image exhibits more noticeable discontinuities, while the right image appears smoother and more visually consistent.
+</p>
+<div class="two-imgs">
+  <img src="imgs\house_nn.jpg">
+  <img src="imgs\house_bi.jpg">
+</div>
+<hr class="sep">
+<div class="two-imgs">
+  <img src="imgs\toothpaste_nn.jpg">
+  <img src="imgs\toothpaste_bi.jpg">
+</div>
+<h2 class="offset">Part4: Blend the Images into a Mosaic</h2>
+<img src="imgs\code2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  In this part, I aligned multiple images onto a common coordinate system using the computed homographies and blended them into a single mosaic through weighted averaging. Each image was assigned higher weights near the center that gradually decreased toward the edges, which helped reduce visible seams and brightness discontinuities. The final results produced three smooth and natural-looking mosaics.
+</p>
+<div class="two-imgs">
+  <img src="imgs\house_nn_result.jpg">
+  <img src="imgs\house_bi_result.jpg">
+</div>
+<hr class="sep">
+<div class="two-imgs">
+  <img src="imgs\toothpaste_nn_result.jpg">
+  <img src="imgs\toothpaste_bi_result.jpg">
+</div>
+<hr class="sep">
+<div class="two-imgs">
+  <img src="imgs\lobby_nn_result.jpg">
+  <img src="imgs\lobby_bi_result.jpg">
+</div>
+</body>
+</html>
