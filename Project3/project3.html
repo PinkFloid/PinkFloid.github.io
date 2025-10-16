@@ -195,5 +195,59 @@
   <img src="imgs\lobby_nn_result.jpg">
   <img src="imgs\lobby_bi_result.jpg">
 </div>
+
+<h2 class="offset">Part2.1: Harris Corner Detection</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Here is the orginal image
+</p>
+<img src="imgs\iceland.jpg" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Corner detection without ANMS
+</p>
+<img src="imgs\harris.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Corner detection with ANMS
+</p>
+<img src="imgs\harris_ANMS.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<h2 class="offset">Part2.2: Feature Descriptor Extraction</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  First two features of corner detection with ANMS
+</p>
+<div class="two-imgs">
+  <img src="imgs\feature1.png">
+  <img src="imgs\feature2.png">
+</div>
+<h2 class="offset">Part2.3: Feature Matching</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Match result of house.
+</p>
+<img src="imgs\house_match.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Match result of my desk.
+</p>
+<img src="imgs\toothpaste_match.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Match result of my lobby.
+</p>
+<img src="imgs\switch_match.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<h2 class="offset">Part2.4: RANSAC for Robust Homography</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Left side is using the Bilinear manually, and right side is automatic stitching.
+</p>
+<div class="two-imgs">
+  <img src="imgs\house_bi_result.jpg">
+  <img src="imgs\house_auto_result.jpg">
+</div>
+<hr class="sep">
+<div class="two-imgs">
+  <img src="imgs\toothpaste_bi_result.jpg">
+  <img src="imgs\toothpaste_auto_result.jpg">
+</div>
+<hr class="sep">
+<div class="two-imgs">
+  <img src="imgs\lobby_bi_result.jpg">
+  <img src="imgs\switch_auto_result.jpg">
+</div>
+
 </body>
 </html>
