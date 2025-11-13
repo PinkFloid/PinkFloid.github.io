@@ -1,0 +1,403 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- 移动端地址栏也用深色 -->
+  <meta name="theme-color" content="#000000" />
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .three-imgs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 三列等宽 */
+      gap: 8px;
+      justify-items: center;   /* 居中对齐图片 */
+    }
+
+    .three-imgs img {
+      width: 100%;     /* 占满格子宽度 */
+      height: auto;    /* 高度自适应，保持比例 */
+      object-fit: contain;  /* 完整显示整个图片，不裁剪 */
+      border-radius: 2px;
+    }
+
+    .two-imgs {
+      display: flex;           /* 横排 */
+      justify-content: center; /* 居中 */
+      gap: 20px;               /* 图片间隙 */
+    }
+
+    .img-block {
+      width: 44%;              /* 跟原来图片宽度一样 */
+      display: flex;
+      flex-direction: column;  /* 文字在上，图在下 */
+      align-items: center;
+    }
+
+    .img-caption {
+      margin-bottom: 6px;      /* 文字和图片间隔 */
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .two-imgs img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .two-imgs-high-quality {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 40px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-high-quality img {
+    width: 64%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 45%;
+    height: 1400px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>Neural Radiance Field</h1><br>
+
+     <hr class="sep">
+</div>
+  
+  <h2 class="offset">Part0: Calibrating Your Camera and Capturing a 3D Scan</h2>
+  <img src="imgs\cameraPos.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <img src="imgs\cameraImages.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  
+</div>
+<hr class="sep">
+
+<h2 class="offset">Part1: Fit a Neural Field to a 2D Image</h2>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.1: I use a fully connected multilayer perceptron (MLP) to regress RGB color from 2D image coordinates. 
+  The input to the network is a 2D pixel coordinate (u, v) in [0, 1]², which is first passed through a positional
+  encoding with L = 10 frequency levels. For each dimension I apply sine and cosine at frequencies
+  2^k·π (k = 0 … 5), so the encoded feature has dimension 2 + 4L = 42 (original 2 coordinates plus 40
+  sinusoidal features). This 42-D vector is fed into a 4-layer MLP with three hidden layers of width 256:
+  26 → 256 → 256 → 256 → 3. Each hidden layer uses a Linear layer followed by a ReLU activation, and the
+  final layer uses a Sigmoid activation to keep the predicted RGB values in [0, 1]. I train this network
+  with Adam using a learning rate of 1×10⁻².
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2:
+</p>
+<div class="three-imgs">
+  <img src="imgs/fox_100.png">
+  <img src="imgs/fox_500.png">
+  <img src="imgs/fox_1500.png">
+</div>
+
+<hr class="sep">
+
+<div class="three-imgs">
+  <img src="imgs/mountain_100.png">
+  <img src="imgs/mountain_500.png">
+  <img src="imgs/mountain_1500.png">
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.3:
+  </p>
+  <div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">L = 10, width = 256</p>
+    <img src="imgs/L10_256.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">L = 10, width = 128</p>
+    <img src="imgs/L10_128.png" alt="">
+  </div>
+</div>
+
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">L = 6, width = 256</p>
+    <img src="imgs/L6_256.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">L = 6, width = 128</p>
+    <img src="imgs/L6_128.png" alt="">
+  </div>
+</div>
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.4: Train Loss and PSNR Loss
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/curve_loss_2d.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/PSNR_loss_2d.png" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+
+<h2 class="offset">Part2: Fit a Neural Radiance Field from Multi-view Images</h2>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part2.1: Create Rays from Cameras. I implemented three functions to convert between
+  different coordinate systems and generate rays. First, <code>transform</code> takes 3D
+  points in camera space, converts them to homogeneous coordinates, and multiplies by
+  the camera-to-world matrix to obtain world-space points. Then,
+  <code>pixel2camera</code> maps pixel coordinates <code>(u, v)</code> with depth
+  <code>s</code> back to camera space using the inverse intrinsic matrix
+  <code>K⁻¹</code>, following the pinhole camera model. Finally,
+  <code>pixel2ray</code> combines these steps: it converts pixels to camera points,
+  transforms them to world space, uses the camera center (translation part of
+  <code>c2w</code>) as the ray origin, and normalizes <code>Xw − ro</code> to obtain
+  unit ray directions <code>rd</code>. The function returns <code>(ro, rd)</code> for
+  each input pixel.
+</p>
+
+
+<img src="imgs\transformpy.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+<img src="imgs\pixel2camera.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+<img src="imgs\pixel2ray.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part2.2: Sampling. I implement two routines, <code>sample_rays</code> and
+  <code>sample_points</code>, to draw training data from the multi-view images.
+  In <code>sample_rays</code>, I first treat all pixels from all training images
+  as a single 1D array and randomly sample N linear indices. Each index is
+  mapped back to an image id and (x, y) pixel coordinate, from which I read the
+  ground-truth RGB and compute sub-pixel centers by adding 0.5 to (x, y).
+  Together with the corresponding camera pose <code>c2w</code> and intrinsic
+  matrix <code>K</code>, I call <code>pixel2ray</code> to obtain the ray origins
+  and directions for those pixels, and normalize the directions to unit length.
+  In <code>sample_points</code>, given a batch of rays, I uniformly sample
+  <code>n_samples</code> depth values between <code>near</code> and
+  <code>far</code> using <code>torch.linspace</code>, then add a small random
+  jitter within each interval to perform stratified sampling. The 3D sample
+  points are finally computed as <code>pts = ro + rd * t</code>. This gives a
+  noisy but uniform set of samples along each ray in 3D space for NeRF
+  training.
+</p>
+
+<img src="imgs\sample_rays.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+
+<img src="imgs\sample_points.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part2.3: Putting the Dataloading All Together
+</p>
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/3d_visualizer.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/3d_visualizer_2.png" alt="">
+  </div>
+</div>
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part2.4: Lego Scene
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  For Part&nbsp;2, I build a NeRF-style pipeline. A custom <code>DataLoader</code> reads
+  multi-view images and camera poses, then randomly samples 4096 pixels over all
+  training images, converts them to rays with <code>pixel2ray</code>, and takes
+  64 stratified samples between <code>near = 2.0</code> and <code>far = 6.0</code>
+  along each ray. The MLP uses positional encoding (Lx = 10 for 3D points,
+  Ld = 6 for view directions) and an 8-layer 256-width network with a density
+  head (ReLU) and an RGB head (Sigmoid). I train with Adam (lr = 5×10⁻⁴) for
+  8000 epochs using MSE loss, track train/val PSNR, and finally render all test
+  views to create a spherical rotation GIF of the Lego scene.
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  left is after 100-epoch-trainning, middle is 500 epochs, right is 8000 epochs
+</p>
+<div class="three-imgs">
+  <img src="imgs/val_ep0100_pred.png">
+  <img src="imgs/val_ep0500_pred.png">
+  <img src="imgs/val_ep8000_pred.png">
+</div>
+<hr class="sep">
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">train loss</p>
+    <img src="imgs/train_loss.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">psnr loss</p>
+    <img src="imgs/psnr_curve.png" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+<div style="text-align:center;">
+  <img src="imgs/lego_spherical.gif" alt="lego rotation" style="width:400px; height:auto; border-radius:8px;">
+</div>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part2.5: My Own Scene
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  Compared to the original Lego NeRF implementation, this version is more
+  “engineered” and feature-complete. I still use a NeRF-style MLP with
+  positional encoding (Lx = 10 for 3D points, Ld = 4 for view directions) and
+  hidden width 256, a density head and an RGB head. However, the density branch
+  now uses a <code>softplus</code> activation instead of ReLU, which keeps
+  densities strictly positive and makes training more stable. Along each ray I
+  sample 96 points between <code>near = 0.1</code> and <code>far = 1.0</code>
+  with stratified jitter; this higher sample count and tighter depth range
+  improve the quality of the volume rendering. I also introduce a cosine
+  annealing learning rate scheduler and a small weight decay
+  (<code>5×10⁻⁴</code> → <code>5×10⁻⁶</code>) for smoother convergence and better
+  generalization.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  On the training side, I now keep a full <code>history</code> dictionary that
+  records epoch, training loss, training PSNR, and validation PSNR. The helper
+  function <code>save_history_and_plots</code> exports this data as both
+  <code>.npz</code> and <code>.csv</code> files and automatically saves loss and
+  PSNR curves to disk, so the whole training process can be inspected and
+  compared across runs. Every 200 epochs I render a validation view using
+  <code>rays_from_val</code>, compute PSNR, and save side-by-side comparisons of
+  ground-truth and predicted images. Finally, I save a checkpoint that includes
+  not only the model weights but also metadata such as <code>K</code>, image
+  resolution, sampling range, and positional encoding settings. Together with
+  the generic <code>render_image_from_c2w</code> function, this allows me to
+  reload the model later and render arbitrary novel views by simply providing
+  a new camera pose, without modifying the training script.
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  left is after 200-epoch-trainning, middle is 600 epochs, right is 6000 epochs
+</p>
+<div class="three-imgs">
+  <img src="imgs/val_ep0200_pred.png">
+  <img src="imgs/val_ep0600_pred.png">
+  <img src="imgs/val_ep6000_pred.png">
+</div>
+<hr class="sep">
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/my_loss_curve.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption"></p>
+    <img src="imgs/my_psnr_curve.png" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+<div style="text-align:center;">
+  <img src="imgs/orbit.gif" alt="lego rotation" style="width:400px; height:auto; border-radius:8px;">
+</div>
+
+
+</body>
+</html>
