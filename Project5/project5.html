@@ -1,0 +1,1213 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- 移动端地址栏也用深色 -->
+  <meta name="theme-color" content="#000000" />
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .three-imgs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 三列等宽 */
+      gap: 8px;
+      justify-items: center;   /* 居中对齐图片 */
+    }
+
+    .three-imgs img {
+      width: 100%;     /* 占满格子宽度 */
+      height: auto;    /* 高度自适应，保持比例 */
+      object-fit: contain;  /* 完整显示整个图片，不裁剪 */
+      border-radius: 2px;
+    }
+
+    .two-imgs {
+      display: flex;           /* 横排 */
+      justify-content: center; /* 居中 */
+      gap: 20px;               /* 图片间隙 */
+    }
+
+    .img-block {
+      width: 44%;              /* 跟原来图片宽度一样 */
+      display: flex;
+      flex-direction: column;  /* 文字在上，图在下 */
+      align-items: center;
+    }
+
+    .img-caption {
+      margin-bottom: 6px;      /* 文字和图片间隔 */
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .two-imgs img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .two-imgs-high-quality {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 40px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-high-quality img {
+    width: 64%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 45%;
+    height: 1400px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+      .five-imgs {
+    display: flex;              /* 横着排 */
+    justify-content: center;    /* 整组居中 */
+    gap: 12px;                  /* 图片之间的间距 */
+    margin: 24px 8vw;           /* 和之前 offset/hr 差不多的左右留白 */
+  }
+
+  .five-imgs figure {
+    margin: 0;
+    width: 18%;                 /* 5 张图并排，大约每张 20% */
+    text-align: center;         /* 文字居中 */
+  }
+
+  .five-imgs img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+  }
+
+  .five-imgs figcaption {
+    margin-top: 6px;
+    font-size: 14px; 
+  }
+
+  .four-imgs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 8vw;
+  }
+
+  .four-imgs figure {
+    margin: 0;
+    width: 22%;          /* 4 张图，每张稍微宽一点 */
+    text-align: center;
+  }
+
+  .four-imgs img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+  }
+
+  .four-imgs figcaption {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  /* 6 张图 */
+  .six-imgs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 8vw;
+  }
+
+  .six-imgs figure {
+    margin: 0;
+    width: 15%;          /* 6 张图，每张稍微窄一点 */
+    text-align: center;
+  }
+
+  .six-imgs img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+  }
+
+  .six-imgs figcaption {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+
+
+  </style>
+</head>
+<body>
+    <h1>Diffusion Models</h1><br>
+
+     <hr class="sep">
+</div>
+  
+  <h2 class="offset">Part0: Play with the Model using My Own Text Prompts</h2>
+  <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Here is my text prompts
+</p>
+  <img src="imgs\prompt.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">a high quality photo_0</p>
+    <img src="imgs\a high quality photo_0.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">an open book on a wooden table with tiny colorful fish swimming out of its pages like an ocean</p>
+    <img src="imgs\an open book on a wooden table with tiny colorful fish swimming out of its pages like an ocean_0.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography</p>
+    <img src="imgs\an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography_0.png" alt="">
+  </div>
+</div>
+  
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography in 10 num_inference steps</p>
+    <img src="imgs\an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography_0 (1).png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography in 20 num_inference steps</p>
+    <img src="imgs\an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography_0.png" alt="">
+  </div>
+</div>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  I found that increasing num_inference_steps generally improves sharpness and coherence (e.g., clearer edges and fewer artifacts),
+  but it also increases runtime. Some prompts (like the robot barista) benefit more from extra steps because they require more structured details.
+</p>
+
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  And the seed I am using is 100.
+</p>
+
+</div>
+<hr class="sep">
+
+<h2 class="offset">Part1: Sampling Loops</h2>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.1 Implementing the Forward
+  <img src="imgs\forward.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Berkeley Campanile
+<img src="imgs\campanile_64x64.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+<hr class="sep">
+<div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">noise level 250</p>
+    <img src="imgs\noise_250.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 500</p>
+    <img src="imgs\noise_500.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 750</p>
+    <img src="imgs\noise_750.png" alt="">
+  </div>
+</div>
+
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2 Classical Denoising:
+  <div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">noise level 250</p>
+    <img src="imgs\noise_250.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 500</p>
+    <img src="imgs\noise_500.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 750</p>
+    <img src="imgs\noise_750.png" alt="">
+  </div>
+</div>
+
+<div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">Gaussian Blur Denoising 250</p>
+    <img src="imgs\noise_250_d.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Gaussian Blur Denoising 500</p>
+    <img src="imgs\noise_500_d.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Gaussian Blur Denoising 750</p>
+    <img src="imgs\noise_750_d.png" alt="">
+  </div>
+</div>
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.3: One-Step Denoising
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Berkeley Campanile
+<img src="imgs\campanile_64x64.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<hr class="sep">
+<div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">noise level 250</p>
+    <img src="imgs\noise_250.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 500</p>
+    <img src="imgs\noise_500.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">noise level 750</p>
+    <img src="imgs\noise_750.png" alt="">
+  </div>
+</div>
+
+<div class="three-imgs">
+  <div class="img-block">
+    <p class="img-caption">One-Step Denoised 250</p>
+    <img src="imgs\250.jpg" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">One-Step Denoised 500</p>
+    <img src="imgs\500.jpg" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">One-Step Denoised 750</p>
+    <img src="imgs\750.jpg" alt="">
+  </div>
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.4: Iterative Denoising
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  Iterative denoising uses strided timesteps from 990 to 0 with stride 30, and we start from i_start = 10.
+</p>
+
+
+<div class="five-imgs">
+  <figure>
+    <img src="imgs/0_iter.png" alt="样例 1">
+    <figcaption>Noisy Campanile 0 iteration</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/5_iter.png" alt="样例 2">
+    <figcaption>Noisy Campanile 5 iteration</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/10_iter.png" alt="样例 3">
+    <figcaption>Noisy Campanile 10 iteration</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/15_iter.png" alt="样例 4">
+    <figcaption>Noisy Campanile 15 iteration</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/20_iter.png" alt="样例 5">
+    <figcaption>Noisy Campanile 20 iteration</figcaption>
+  </figure>
+</div>
+
+<div class="four-imgs">
+  <figure>
+    <img src="imgs/campanile_64x64.png" alt="样例 1">
+    <figcaption>original</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/22_iter.png" alt="样例 2">
+    <figcaption>Iteratively Denoised Campanile</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/750.jpg" alt="样例 3">
+    <figcaption>One-Step Denoised Campanile</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/noise_750_d.png" alt="样例 4">
+    <figcaption>Gaussian Blurred Campanile</figcaption>
+  </figure>
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.5: Diffusion Model Sampling
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  Prompt: "a high quality photo" (seed = 100).
+</p>
+
+<div class="five-imgs">
+  <figure>
+    <img src="imgs/sample_0.jpg" alt="样例 1">
+    <figcaption>sample 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/sample_1.jpg" alt="样例 2">
+    <figcaption>sample 2</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/sample_2.jpg" alt="样例 3">
+    <figcaption>sample 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/sample_3.jpg" alt="样例 4">
+    <figcaption>sample 4</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/sample_4.jpg" alt="样例 5">
+    <figcaption>sample 5</figcaption>
+  </figure>
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.6: Classifier-Free Guidance (CFG)
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  CFG sampling with guidance scale γ = 7 and prompt: "a high quality photo".
+</p>
+
+
+<div class="five-imgs">
+  <figure>
+    <img src="imgs/1_iter_cfg.png" alt="样例 1">
+    <figcaption>sample 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/2_iter_cfg.png" alt="样例 2">
+    <figcaption>sample 2</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/3_iter_cfg.png" alt="样例 3">
+    <figcaption>sample 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/4_iter_cfg.png" alt="样例 4">
+    <figcaption>sample 4</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/5_iter_cfg.png" alt="样例 5">
+    <figcaption>sample 5</figcaption>
+  </figure>
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.7 Image-to-image Translation
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  Text-conditional edits use the provided prompt(s) in the handout with CFG (γ = 7).
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Berkeley Campanile
+<img src="imgs\campanile_64x64.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\1.7_1_1.jpg" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_3_1.jpg" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_5_1.jpg" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_7_1.jpg" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_10_1.jpg" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_20_1.jpg" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs\an ultra detailed photo of a robot barista making latte art in a futuristic coffee shop neon reflections 35mm photography_0.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\1.7_1_2.jpg" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_3_2.jpg" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_5_2.jpg" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_7_2.jpg" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_10_2.jpg" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_20_2.jpg" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs\an open book on a wooden table with tiny colorful fish swimming out of its pages like an ocean_0.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\1.7_1_3.jpg" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_3_3.jpg" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_5_3.jpg" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_7_3.jpg" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_10_3.jpg" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/1.7_20_3.jpg" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.7.1 Editing Hand-Drawn and Web Images
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs\advocado.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\step_1.png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_3.png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_5.png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_7.png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_10.png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_20.png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs\house.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\house1.png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/house3.png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/house5.png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/house7.png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/house10.png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/house20.png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs\robot.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs\robot1.png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/robot3.png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/robot5.png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/robot7.png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/robot10.png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/robot20.png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.7.2 Inpainting
+</p>
+
+<hr class="sep">
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Campanile</p>
+    <img src="imgs/campanile_64x64.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Campanile Inpainted</p>
+    <img src="imgs/1.7.2_3.jpg" alt="">
+  </div>
+</div>
+</p>
+
+<hr class="sep">
+</p>
+<div class="four-imgs">
+  <div class="img-block">
+    <p class="img-caption">Original</p>
+    <img src="imgs/1.7.2_2_original.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Mask</p>
+    <img src="imgs/1.7.2_2_mask.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">to_replace</p>
+    <img src="imgs/1.7.2_2_to_replace.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Inpainted</p>
+    <img src="imgs/1.7.2_2.jpg" alt="">
+  </div>
+</div>
+</p>
+</p>
+<hr class="sep">
+</p>
+<div class="four-imgs">
+  <div class="img-block">
+    <p class="img-caption">Original</p>
+    <img src="imgs/1.7.2_4_original.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Mask</p>
+    <img src="imgs/1.7.2_4_mask.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">to_replace</p>
+    <img src="imgs/1.7.2_4_to_replace.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Inpainted</p>
+    <img src="imgs/1.7.2_4.jpg" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.7.3 Text-Conditional Image-to-image Translation
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Berkeley Campanile
+<img src="imgs\campanile_64x64.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs/step_1 (10).png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_3 (10).png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_5 (10).png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_7 (10).png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_10 (10).png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_20 (10).png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs/1.7.2_2_original.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs/step_1 (8).png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_3 (8).png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_5 (8).png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_7 (8).png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_10 (8).png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_20 (8).png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Original Image
+<img src="imgs/1.7.2_4_original.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<div class="six-imgs">
+  <figure>
+    <img src="imgs/step_1 (9).png" alt="样例 1">
+    <figcaption>i_start = 1</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_3 (9).png" alt="样例 2">
+    <figcaption>i_start = 3</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_5 (9).png" alt="样例 3">
+    <figcaption>i_start = 5</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_7 (9).png" alt="样例 4">
+    <figcaption>i_start = 7</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_10 (9).png" alt="样例 5">
+    <figcaption>i_start = 10</figcaption>
+  </figure>
+  <figure>
+    <img src="imgs/step_20 (9).png" alt="样例 5">
+    <figcaption>i_start = 20</figcaption>
+  </figure>
+</div>
+<hr class="sep">
+
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.8 Visual Anagrams
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Bridge</p>
+    <img src="imgs/illusion_top.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Book</p>
+    <img src="imgs/illusion_bottom_reveal.png" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Robot</p>
+    <img src="imgs/illusion_top (1).png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Bridge</p>
+    <img src="imgs/illusion_bottom_reveal (1).png" alt="">
+  </div>
+</div>
+</p>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part1.9 Hybrid Images
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Book and Fish</p>
+    <img src="imgs/hybrid_close_view (3).png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Robot</p>
+    <img src="imgs/hybrid_far_view (3).png" alt="">
+  </div>
+</div>
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Bridge</p>
+    <img src="imgs/hybrid_close_view (2).png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Book</p>
+    <img src="imgs/hybrid_far_view (2).png" alt="">
+  </div>
+</div>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr class="sep">
+<h2 class="offset">PartB: Flow Matching</h2>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2 Using the UNet to Train a Denoiser:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2_unet.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2.1 Training:
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training after 1 epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.1_unet_1_epoch.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training after 5 epochs:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.1_unet_5_epoch.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training Loss Curve:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.1_unet_train_loss.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2.2 Out-of-Distribution Testing:
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0.2:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0.4:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.4.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0.5:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.5.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0.6:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.6.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 0.8:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma0.8.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Noise Level = 1:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.2_unet_sigma1.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 1.2.3 Denoising Pure Noise:
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 1 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.3_unet_1_epoch.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 5 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.3_unet_5_epoch.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training Loss:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/1.2.3_unet_train_loss.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  We observe that nearly all generated outputs look the same and resemble a blurry mixture of multiple digits. This happens because the input is pure random Gaussian noise, which provides almost no information about which specific MNIST digit the model should reconstruct. With an MSE loss, the model is rewarded for producing an “average” output that minimizes squared error over many possible training images. As a result, instead of generating diverse digits, the network tends to converge to a single prototype that looks like a superposition of many digits, so different random inputs lead to very similar outputs.
+</p>
+
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 2.2 Training the UNet:
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.2_train_loss.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  2.3 Sampling from the UNet:
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 1 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.3_epoch_1.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 5 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.3_epoch2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 10 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.3_epoch10.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Part 2.5 Training the UNet(Class-Conditional):
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.5_train_loss.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  2.6 Sampling from the UNet(Class-Conditional):
+</p>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 1 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch_1.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 5 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 10 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch10.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  After I remove the learning rate scheduler, I lower the learning rate(1e-3) to compensate for the lack of the scheduler:
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 1 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch_1_without_sche.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 5 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch2_without_sche.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+  Training After 10 Epoch:
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.6_epoch10_without_sche.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+</p>
+
+
+</body>
+</html>
