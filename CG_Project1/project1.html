@@ -1,0 +1,515 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- 移动端地址栏也用深色 -->
+  <meta name="theme-color" content="#000000" />
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .three-imgs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 三列等宽 */
+      gap: 8px;
+      justify-items: center;   /* 居中对齐图片 */
+    }
+
+    .three-imgs img {
+      width: 100%;     /* 占满格子宽度 */
+      height: auto;    /* 高度自适应，保持比例 */
+      object-fit: contain;  /* 完整显示整个图片，不裁剪 */
+      border-radius: 2px;
+    }
+
+    .two-imgs {
+      display: flex;           /* 横排 */
+      justify-content: center; /* 居中 */
+      gap: 20px;               /* 图片间隙 */
+    }
+
+    .img-block {
+      width: 44%;              /* 跟原来图片宽度一样 */
+      display: flex;
+      flex-direction: column;  /* 文字在上，图在下 */
+      align-items: center;
+    }
+
+    .img-caption {
+      margin-bottom: 6px;      /* 文字和图片间隔 */
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .two-imgs img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .two-imgs-high-quality {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 40px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-high-quality img {
+    width: 64%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 45%;
+    height: 1400px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>Rasterize and Transform</h1><br>
+
+     <hr class="sep">
+</div>
+  
+  <h2 class="offset">Overview</h2>
+  <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  This homework helped me understand the full pipeline of turning continuous geometry into discrete pixels on a screen. Starting from triangle vertices and their attributes, I implemented the key transforms that project a 3D object onto the 2D image plane, and then rasterized the projected triangles onto a pixel grid. Building this from scratch made the “continuous-to-discrete” nature of rendering much more concrete: what we see on the screen is fundamentally the result of sampling, and the sampling strategy directly affects image quality.
+  <br><br>
+  A central tool throughout the implementation was barycentric coordinates. By expressing any point inside a triangle as a weighted combination of its three vertices, I was able to consistently interpolate per-vertex quantities such as color and texture coordinates. This not only simplified the code structure, but also clarified why barycentric interpolation is the standard way to estimate values within triangles in real-time graphics.
+  <br><br>
+  I also learned how different sampling techniques combat aliasing. By experimenting with multiple samples per pixel and different pixel sampling methods (nearest vs. bilinear), I observed the tradeoff between performance and visual quality, especially along triangle edges where jaggies are most apparent. Finally, I implemented mipmapping and level sampling by estimating how texture coordinates change across screen space and selecting an appropriate mipmap level. This significantly reduced aliasing during minification and improved stability when zooming, highlighting why mipmaps are essential for high-frequency textures.
+</p>
+
+  
+</div>
+<hr class="sep">
+
+<h2 class="offset">Task1: Drawing Single-Color Triangles</h2>
+<hr class="sep">
+<h3 class="offset">1. How I rasterize triangles (including the tile optimization)</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  To rasterize a single-color triangle, I restrict work to the triangle’s axis-aligned bounding box and then test sample points using half-plane edge functions. In addition, I apply a simple tile (sampling-box) optimization: I step through the bounding box in fixed-size tiles and, when an entire tile is guaranteed to lie inside the triangle, I fill the whole tile without doing per-pixel inside tests.
+  <br><br>
+
+  <b>Bounding box.</b> Given triangle vertices (x0, y0), (x1, y1), (x2, y2), I compute:
+  xmin = floor(min(x0, x1, x2)), xmax = ceil(max(x0, x1, x2)),
+  ymin = floor(min(y0, y1, y2)), ymax = ceil(max(y0, y1, y2)).
+  This is the smallest axis-aligned rectangle that contains the triangle, so I only consider pixels (and tiles) whose sample points lie within this region.
+  <br><br>
+
+  <b>Sampling point.</b> For each pixel (x, y), I use pixel-center sampling, i.e., the sample point is p = (x + 0.5, y + 0.5). This matches the spec requirement to test the center of each pixel rather than a corner.
+  <br><br>
+
+  <b>Point-in-triangle test (half-plane tests).</b> For each edge of the triangle, I construct an edge vector and a perpendicular normal (rotated by 90 degrees). For a sample point p, I compute dot products against the three edge normals. To make the test independent of vertex winding (clockwise vs. counterclockwise), I accept the point as inside if either all three tests are non-negative or all three tests are non-positive. This includes samples that fall exactly on the triangle boundary.
+  <br><br>
+
+  <b>Tile optimization.</b> I choose a fixed tile size (e.g., 8×8 pixels) and iterate over tiles in the bounding box. For each tile, I first test the four tile corners with the same half-plane test. If all four corners are inside the triangle (under the same consistent-sign rule), then the entire tile must lie inside the triangle (because the triangle is convex), so I fill every pixel in that tile directly. Otherwise, I fall back to the standard per-pixel (center) point-in-triangle test for pixels in the tile. This optimization reduces the number of per-pixel inside tests when the triangle contains large interior regions.
+</p>
+
+<h3 class="offset">2. Why my algorithm is no worse than bounding-box sampling</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  In the worst case, many tiles intersect triangle boundaries, so the algorithm falls back to performing the same per-pixel point-in-triangle test for every pixel center in the triangle’s bounding box. Therefore, the worst-case asymptotic complexity remains O(N), where N is the number of pixels in the bounding box, matching the baseline approach.
+  <br><br>
+  The extra work introduced by the tile optimization is a constant amount per tile (testing four corners). This overhead does not change the asymptotic runtime, and it can only reduce the amount of per-pixel work when tiles are fully inside the triangle. As a result, the method is not asymptotically worse than standard bounding-box triangle rasterization, and it is often faster in practice for large triangles with substantial interior area.
+</p>
+
+<h3 class="offset">3. screenshot of basic/test4.svg</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/task1.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+
+<hr class="sep">
+
+<h2 class="offset">Task 2:</b>  Supersampling Antialiasing</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+
+  <b>Why supersampling helps.</b>
+  With sample_rate = 1, each pixel (x, y) is classified using a single sample point (usually the pixel center), so pixels near triangle edges become hard 0/1 decisions, producing jagged “stair-step” aliasing. Supersampling reduces aliasing by taking multiple samples inside each pixel and averaging them, so edge pixels become partial-coverage averages instead of binary decisions.
+  <br><br>
+
+  <b>Subsample grid.</b>
+  Let <code>N = sample_rate</code> and <code>n = sqrt(N)</code>. The subsample location for grid coordinate <code>(i, j)</code> is:
+  <br>
+  <code>p(i,j) = ( x + (i + 0.5)/n ,  y + (j + 0.5)/n )</code>,
+  where <code>0 &le; i, j &lt; n</code>.
+  <br><br>
+
+  <b>Supersample buffer layout.</b>
+  I store per-subsample colors in a 1D array <code>sample_buffer</code> of length <code>W * H * N</code>
+  (<code>W</code> = width, <code>H</code> = height). Each pixel <code>(x, y)</code> owns a contiguous block of <code>N</code> entries:
+  <br>
+  <code>base(x,y) = (y * W + x) * N</code>
+  <br>
+  <code>idx(x,y,s) = base(x,y) + s</code>
+  <br>
+  For a 2D subsample index <code>(i, j)</code>, I flatten it as:
+  <br>
+  <code>s = j * n + i</code>
+  <br><br>
+
+
+  <b>Point-in-triangle test.</b>
+  For each subsample point p, I use the same half-plane (edge function) test as in Part 1 to decide whether p lies inside the triangle (including boundary points). If inside, I write the triangle color to sample_buffer[idx(x,y,s)]; otherwise it remains the cleared background value.
+  <br><br>
+
+  <b>Resolve step (averaging).</b>
+  After rasterizing, I convert the supersample buffer into the final framebuffer by averaging the N subsamples for each pixel:
+  <br>
+  C(x,y) = (1/N) * sum_{s=0..N-1} sample_buffer[ base(x,y) + s ]
+  <br>
+  This averaging is what produces smoother edge transitions when sample_rate increases (1 → 4 → 16).
+  <br><br>
+
+  <b>What I observe in the screenshots.</b>
+  When sample_rate = 1, thin triangle corners and near-diagonal edges show strong jaggies due to single-sample 0/1 coverage. With sample_rate = 4, edges become noticeably smoother because some pixels near the boundary have partial coverage. With sample_rate = 16, the transition is smoother still, especially in very skinny triangles and sharp corners where the boundary crosses many pixels.
+</p>
+
+<hr class="sep">
+<div class="three-imgs">
+  <p class="img-caption">Sample rate = 1x1
+  <img src="imgs/task2_sample1.png">
+  </p>
+  <p class="img-caption">Sample rate = 2x2
+  <img src="imgs/task2_sample4.png">
+  </p>
+  <p class="img-caption">Sample rate = 4x4
+  <img src="imgs/task2_sample16.png">
+  </p>
+</div>
+<br><br>
+<hr class="sep">
+
+<h2 class="offset">Task 3:</b>  Hierarchical Transforms</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  For this task, I modified <code>svg/transforms/robot.svg</code> to make the cubeman look like he is cheering. I kept the original SVG structure and relied on hierarchical transforms by updating only the arm group transforms, while leaving the existing translations and scales unchanged.
+  <br><br>
+  Concretely, I rotated the left arm group by <code>rotate(45)</code> and the right arm group by <code>rotate(-45)</code>. Because each arm is defined inside its own <code>&lt;g&gt;</code> group, applying a rotation at the group level rotates all polygons of that arm together around the group’s local coordinate frame. This demonstrates hierarchical transforms: the final pose results from composing the arm’s local rotation with its parent transforms (translation/scale) in the scene.
+  <br><br>
+  The result is that both arms lift diagonally upward, creating a clear “hands-up celebration” pose while preserving the rest of the robot’s body configuration.
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/task3.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+<hr class="sep">
+
+
+<h2 class="offset">Task 4:</b> Barycentric Coordinates and Color Interpolation</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+
+  <b>What barycentric coordinates mean.</b>
+  To interpolate values smoothly across a triangle, I use barycentric coordinates. For any point P inside triangle ABC, there exist weights (α, β, γ) such that:
+  <br>
+  <code>P = αA + βB + γC</code>, &nbsp;with&nbsp; <code>α + β + γ = 1</code>.
+  <br>
+  These weights describe how much P is “influenced” by each vertex. Near vertex A, α is large; on the edge BC (opposite A), α becomes 0.
+  <br><br>
+
+  <b>Using barycentric weights to interpolate color.</b>
+  If the triangle vertices have colors Color(A), Color(B), Color(C), then the color at P is computed by the same weighted combination:
+  <br>
+  <code>Color(P) = α * Color(A) + β * Color(B) + γ * Color(C)</code>.
+  <br>
+  This produces smooth gradients because the weights vary continuously across the triangle.
+  <br><br>
+
+  <b>How I compute one weight using signed heights (projection onto an edge normal).</b>
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/weight.jpg" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  To compute beta (the weight for vertex A), I treat the opposite edge BC as a reference line. Let n be any normal vector perpendicular to BC (as shown in my sketch).
+  I measure “signed height” above the line BC by projecting a vector onto n.
+  <br><br>
+
+  Using B as a common origin, the signed height of point P above line BC is:
+  <br>
+  <code>h_P = (BP · n) / ||n||</code>
+  <br>
+  and the signed height of vertex A above the same line BC is:
+  <br>
+  <code>h_A = (BA · n) / ||n||</code>
+  <br><br>
+
+  Because the factor <code>||n||</code> cancels in the ratio, α can be computed as a simple height ratio:
+  <br>
+  <code>beta = h_P / h_A = (BP · n) / (BA · n)</code>
+  <br><br>
+
+
+  <b>Important detail:</b> BP and BA must be formed from the same origin (B) so both projections measure height relative to the same reference line BC. This makes the ratio consistent.
+  <br><br>
+
+  <b>Computing the other two weights.</b>
+  I compute β and γ the same way by choosing the opposite edges CA and AB as reference lines, respectively. In practice, once two weights are known, the third can also be obtained by:
+  
+  <code>γ = 1 - α - β</code>.
+
+<h3 class="offset">Result:</b></h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/task4.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+</p>
+
+<hr class="sep">
+<h2 class = 'offset'><b>Task 5:</b> Pixel Sampling for Texture Mapping (Nearest vs. Bilinear)</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+
+  <b>Texture mapping as a sampling problem.</b>
+  A texture image stores colors over texture space (u, v). During rendering, we must assign a color to each screen sample covered by a triangle (the pixel center, or multiple sub-samples when supersampling is enabled). The key idea is <b>inverse mapping</b>: instead of iterating over texels, we iterate over sample points in screen space and map each sample back into texture space to fetch a texture color.
+  <br><br>
+
+  <b>How I implement texture mapping.</b>
+  For each screen sample point that lies inside a triangle, I first compute its barycentric weights with respect to the triangle vertices. I then use the same weights to interpolate the texture coordinates:
+  <br>
+  <code>uv(P) = α * uv0 + β * uv1 + γ * uv2</code>, with <code>α + β + γ = 1</code>.
+  <br>
+  After obtaining the interpolated (u, v) for that sample point, I fetch a texture color using the selected pixel sampling method (nearest or bilinear) and write the result into the supersample buffer. Importantly, I <b>interpolate UV first and then sample the texture once</b> at that UV location, rather than sampling only at the three vertex UVs.
+  <br><br>
+
+  <b>Nearest-neighbor sampling.</b>
+  Nearest sampling converts the interpolated (u, v) into texture pixel coordinates and picks the single closest texel. This method is very fast (one texel lookup), but it often produces blocky artifacts and strong aliasing when the texture is magnified or when the texture contains high-frequency detail.
+  <br><br>
+
+  <b>Bilinear sampling.</b>
+  Bilinear sampling also converts (u, v) into texture pixel coordinates, but instead of choosing one texel, it fetches the four neighboring texels around the coordinate and blends them based on the fractional position inside the texel cell. Compared to nearest, bilinear produces smoother transitions and reduces abrupt “pixel stepping.” It does not fully eliminate aliasing under heavy minification (mipmapping is needed for that), but it typically looks noticeably smoother than nearest for the same UV location.
+  <br><br>
+
+  <b>When the difference is largest.</b>
+  The gap between nearest and bilinear is most visible when:
+  <br>
+  • the texture is magnified (zoomed in), so single-texel jumps become obvious, or
+  <br>
+  • the texture has sharp edges / high-frequency patterns (text, checkerboards, thin lines),
+  <br>
+  because nearest produces discontinuous changes while bilinear blends neighboring texels continuously.
+  <br><br>
+
+  <b>Relationship with supersampling (1 spp vs 16 spp).</b>
+  Increasing samples per pixel mainly smooths <b>geometric edges</b> by turning hard coverage decisions into partial coverage averages. Pixel sampling (nearest vs bilinear) mainly affects <b>how the texture itself is reconstructed</b> at a given UV. In my screenshots, bilinear tends to look smoother at both 1 spp and 16 spp, while 16 spp additionally reduces jaggies along triangle boundaries.
+</p>
+
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+  <b>Observations from the comparison.</b>
+  In the selected region (chosen using the pixel inspector), bilinear sampling preserves smoother transitions across texture features and avoids the blocky stepping that appears with nearest sampling. With 16 spp, triangle edges are also smoother due to better coverage estimation, but the difference between nearest and bilinear remains visible on the texture itself, especially around sharp texture boundaries and fine patterns.
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Nearest & Sample rate: 1x1</p>
+    <img src="imgs/task5_nn_1x1.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Bilinear & Sample rate: 1x1</p>
+    <img src="imgs/task5_b_1x1.png" alt="">
+  </div>
+</div>
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">Nearest & Sample rate: 4x4</p>
+    <img src="imgs/task5_nn_4x4.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">Bilinear & Sample rate: 4x4</p>
+    <img src="imgs/task5_b_4x4.png" alt="">
+  </div>
+</div>
+</p>
+<br>
+<br>
+<hr class="sep">
+
+<h2 class = 'offset'><b>Task 6:</b> Level Sampling with Mipmaps </h2>
+<hr class="sep">
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+
+  <b>What level sampling is.</b>
+  Pixel sampling (nearest vs. bilinear) decides how we reconstruct color <i>within a single mip level</i>.
+  Level sampling decides <i>which mip level</i> to sample from when the texture is scaled on screen. Mipmaps are a prefiltered pyramid of the texture
+  (level 0 is full resolution, level 1 is downsampled by 2, etc.). The goal is to reduce aliasing during minification by sampling from a level whose texel footprint better matches a screen pixel’s footprint.
+  <br><br>
+
+  <b>How I estimate the mip level (get_level).</b>
+  In <code>RasterizerImp::rasterize_textured_triangle</code>, for each screen sample point P = (x, y) inside the triangle, I compute barycentric weights and interpolate:
+  <br>
+  • <code>uv</code> at P, stored as <code>sp.p_uv</code>
+  <br>
+  • <code>uv_dx</code> at (x + 1, y), stored as <code>sp.p_dx_uv</code>
+  <br>
+  • <code>uv_dy</code> at (x, y + 1), stored as <code>sp.p_dy_uv</code>
+  <br><br>
+
+  Inside <code>Texture::get_level</code>, I form finite differences to approximate derivatives:
+  <br>
+  <code>du/dx, dv/dx</code> from <code>(sp.p_dx_uv - sp.p_uv)</code>
+  <br>
+  <code>du/dy, dv/dy</code> from <code>(sp.p_dy_uv - sp.p_uv)</code>
+  <br><br>
+
+  I then scale these UV differentials into texel space using the full-resolution texture size (width, height) and compute the footprint magnitude:
+  <br>
+  <code>Lx = sqrt( (du/dx * width)^2 + (dv/dx * height)^2 )</code>
+  <br>
+  <code>Ly = sqrt( (du/dy * width)^2 + (dv/dy * height)^2 )</code>
+  <br>
+  <code>L  = max(Lx, Ly)</code>
+  <br><br>
+
+  Finally, the continuous mip level is:
+  <br>
+  <code>level = log2(L)</code>
+  <br>
+  and I clamp it to the valid range <code>[0, max_level]</code>.
+  <br><br>
+
+  <b>How I sample levels (Texture::sample).</b>
+  My <code>Texture::sample</code> supports three level sampling modes (controlled by the GUI toggle):
+  <br><br>
+
+  • <b>L_ZERO:</b> always sample from level 0 (no mipmapping), identical to Part 5 behavior.
+  <br>
+  • <b>L_NEAREST:</b> round the computed continuous level to the nearest integer and sample only that mip level.
+  <br>
+  • <b>L_LINEAR:</b> sample from the two adjacent mip levels (floor(level) and ceil(level)) and linearly blend them by the fractional part.
+  <br><br>
+
+  After choosing the mip level(s), I apply the selected pixel sampling method:
+  <br>
+  <code>P_NEAREST</code> uses <code>sample_nearest(uv, level)</code>, and
+  <code>P_LINEAR</code> uses <code>sample_bilinear(uv, level)</code>.
+  <br><br>
+
+  <b>Why L_ZERO and L_NEAREST look similar when zooming in.</b>
+  When the texture is magnified, the estimated footprint L is &lt; 1, so <code>log2(L)</code> becomes negative and the level clamps to 0. In that case, both L_ZERO and L_NEAREST end up sampling level 0, so they appear nearly identical. The differences between level sampling modes become most visible during minification (zooming out) and in high-frequency textures.
+  <br><br>
+
+  <b>Tradeoffs: speed, memory, and antialiasing power.</b>
+  <br>
+  • <b>Pixel sampling (nearest vs. bilinear):</b> affects local smoothness inside one mip level; bilinear costs more texture fetches but reduces “blocky stepping.”
+  <br>
+  • <b>Level sampling (mipmaps):</b> greatly reduces minification aliasing; building/storing mipmaps increases memory usage (~33% extra), and L_LINEAR costs extra sampling (two levels).
+  <br>
+  • <b>Samples per pixel (supersampling):</b> increases cost roughly proportional to sample rate, improves geometric edge antialiasing and helps a bit with texture aliasing, but mipmaps are still the key tool for heavy minification.
+  <br><br>
+
+  <b>Observations from my comparisons.</b>
+  With a high-frequency png texture, L_ZERO tends to show shimmering/moire patterns when zooming out because it samples only level 0. L_NEAREST reduces aliasing but can introduce “popping” when the chosen mip level changes discretely. L_LINEAR smooths the transition between levels by blending adjacent mipmaps, improving temporal stability during zooming.
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">P_NEAREST & L_ZERO</p>
+    <img src="imgs/l0_nearest.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">P_LINEAR & L_ZERO</p>
+    <img src="imgs/l0_linear.png" alt="">
+  </div>
+</div>
+</p>
+
+</p>
+<div class="two-imgs">
+  <div class="img-block">
+    <p class="img-caption">P_NEAREST & L_NEAREST</p>
+    <img src="imgs/ln_nearest.png" alt="">
+  </div>
+
+  <div class="img-block">
+    <p class="img-caption">P_LINEAR & L_NEAREST</p>
+    <img src="imgs/ln_linear.png" alt="">
+  </div>
+</div>
+</p>
+
+
+</body>
+</html>
