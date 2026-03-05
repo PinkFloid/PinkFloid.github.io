@@ -186,40 +186,57 @@ This reduces the number of points by one. The same interpolation is then applied
 <h3 class="offset">2. screenshots</h3>
 <hr class="sep">
 <div class="three-imgs">
-  <p class="img-caption">Sample rate = 1x1
+  <p class="img-caption">original
   <img src="imgs/1_1.png">
   </p>
-  <p class="img-caption">Sample rate = 2x2
+  <p class="img-caption">step 1
   <img src="imgs/1_2.png">
   </p>
-  <p class="img-caption">Sample rate = 4x4
+  <p class="img-caption">step 2
   <img src="imgs/1_3.png">
   </p>
 </div>
 <br><br>
 <hr class="sep">
 
+<div class="three-imgs">
+  <p class="img-caption">step 3
+  <img src="imgs/1_4.png">
+  </p>
+  <p class="img-caption">step 4
+  <img src="imgs/1_5.png">
+  </p>
+  <p class="img-caption">step 5
+  <img src="imgs/1_6.png">
+  </p>
+</div>
+<br><br>
 <hr class="sep">
+<div class="two-imgs">
+  <p class="img-caption">Finally
+  <img src="imgs/1_7.png">
+  </p>
+  <p class="img-caption">different t
+  <img src="imgs/1_different_t.png">
+  </p>
 
-<h2 class="offset">Task 2:</b>  Supersampling Antialiasing</h2>
+</div>
+<br><br>
+
+
+<h2 class="offset">Task 2:</b> Bezier Surfaces with Separable 1D de Casteljau</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
 
   
-  When sample_rate = 1, thin triangle corners and near-diagonal edges show strong jaggies due to single-sample 0/1 coverage. With sample_rate = 4, edges become noticeably smoother because some pixels near the boundary have partial coverage. With sample_rate = 16, the transition is smoother still, especially in very skinny triangles and sharp corners where the boundary crosses many pixels.
+  To evaluate a Bézier surface patch at parameters ((u,v)), I extend de Casteljau’s algorithm by applying the 1D curve evaluation twice. The control points form a 2D grid (P_{i,j}). First, I treat each row (P_{i,0..n}) as a Bézier curve and run de Casteljau at parameter (u), producing one point (Q_i(u)) per row. These points ({Q_i(u)}) form a new 1D set of control points. Then I run de Casteljau again on ({Q_i(u)}) at parameter (v) to get the final surface point (S(u,v)). In code, `evaluate1D` repeatedly calls `evaluateStep` until one point remains, and `evaluate(u,v)` evaluates each row at (u) and then evaluates the resulting points at (v).
+
 </p>
 
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
 <hr class="sep">
-<div class="three-imgs">
-  <p class="img-caption">Sample rate = 1x1
-  <img src="imgs/task2_sample1.png">
-  </p>
-  <p class="img-caption">Sample rate = 2x2
-  <img src="imgs/task2_sample4.png">
-  </p>
-  <p class="img-caption">Sample rate = 4x4
-  <img src="imgs/task2_sample16.png">
-  </p>
-</div>
 <br><br>
 <hr class="sep">
 
