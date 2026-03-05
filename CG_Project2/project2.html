@@ -2,16 +2,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <!-- 移动端地址栏也用深色 -->
   <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body,{delimiters:[
-        {left:'$$', right:'$$', display:true},
-        {left:'\\[', right:'\\]', display:true},
-        {left:'\\(', right:'\\)', display:false}
-    ]});"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "$", right: "$", display: false }  // 建议加上单 $ 支持
+      ],
+      throwOnError: false
+    });
+  });
+</script>
   <title>Black Theme</title>
   <style>
     html, body { height: 100%; }
@@ -174,12 +183,11 @@ Overall, the assignment ties together geometry (positions/normals) and topology 
 <hr class="sep">
 <h3 class="offset">1. Briefly explaination of de Casteljau’s algorithm</h3>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
-de Casteljau’s algorithm evaluates a Bézier curve by repeatedly applying linear interpolation between adjacent control points. Given control points (P_0, P_1, \dots, P_n) and a parameter (t \in [0,1]), one “level” of the algorithm computes a new set of points
-[
+de Casteljau’s algorithm evaluates a Bézier curve by repeatedly applying linear interpolation between adjacent control points. Given control points \(P_0, P_1, \dots, P_n\) and a parameter \(t \in [0,1]\), one “level” of the algorithm computes a new set of points
+\[
 P_i^{(1)} = (1-t)P_i + tP_{i+1}, \quad i = 0,\dots,n-1.
-]
-This reduces the number of points by one. The same interpolation is then applied to the new set, producing (P_i^{(2)}), and the process continues until only a single point remains. That final point is the point on the Bézier curve at parameter (t). Varying (t) traces out a smooth curve that always passes through the first and last control points.
-
+\]
+This reduces the number of points by one. The same interpolation is then applied to the new set, producing \(P_i^{(2)}\), and the process continues until only a single point remains. That final point is the point on the Bézier curve at parameter \(t\). Varying \(t\) traces out a smooth curve that always passes through the first and last control points.
 </p>
 
 
@@ -228,7 +236,7 @@ This reduces the number of points by one. The same interpolation is then applied
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
 
   
-  To evaluate a Bézier surface patch at parameters ((u,v)), I extend de Casteljau’s algorithm by applying the 1D curve evaluation twice. The control points form a 2D grid (P_{i,j}). First, I treat each row (P_{i,0..n}) as a Bézier curve and run de Casteljau at parameter (u), producing one point (Q_i(u)) per row. These points ({Q_i(u)}) form a new 1D set of control points. Then I run de Casteljau again on ({Q_i(u)}) at parameter (v) to get the final surface point (S(u,v)). In code, `evaluate1D` repeatedly calls `evaluateStep` until one point remains, and `evaluate(u,v)` evaluates each row at (u) and then evaluates the resulting points at (v).
+  To evaluate a Bézier surface patch at parameters \((u,v)\), I extend de Casteljau’s algorithm by applying the 1D curve evaluation twice. The control points form a 2D grid \(\{P_{i,j}\}\). First, I treat each row \(\{P_{i,0}, \ldots, P_{i,n}\}\) as a Bézier curve and run de Casteljau at parameter \(u\), producing one point \(Q_i(u)\) per row. These points \(\{Q_i(u)\}\) form a new 1D set of control points. Then I run de Casteljau again on \(\{Q_i(u)\}\) at parameter \(v\) to get the final surface point \(S(u,v)\). In code, `evaluate1D` repeatedly calls `evaluateStep` until one point remains, and `evaluate(u,v)` evaluates each row at \(u\) and then evaluates the resulting points at \(v\).
 
 </p>
 
@@ -236,266 +244,143 @@ This reduces the number of points by one. The same interpolation is then applied
 <img src="imgs/2.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
   <br><br>
 </p>
+
 <hr class="sep">
+
+<h2 class="offset">Task 3:</b>  Area-Weighted Vertex Normals</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+    In `Vertex::normal()`, I compute an area-weighted vertex normal by summing the (area-scaled) face normals of all triangles incident to the vertex and then normalizing the result. Using the half-edge structure, I start from an outgoing half-edge `h = halfedge()` and loop around the vertex via `h = h->twin()->next()`, which visits each neighboring face exactly once. For each non-boundary face, I gather its three vertices using `h->vertex()`, `h->next()->vertex()`, and `h->next()->next()->vertex()`, and form the edge vectors `p1 - p0` and `p2 - p0`. Their cross product `cross(p1 - p0, p2 - p0)` points in the face’s normal direction, and its magnitude equals twice the triangle’s area, so it naturally provides area weighting without computing the area explicitly. I add this cross product into an accumulator `sum` for all incident faces, and finally return `sum.unit()` to produce a unit-length normal suitable for Phong shading. This produces smoother shading than flat shading because each vertex normal represents the averaged local surface orientation.
+</p>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
+<img src="imgs/3.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+<hr class="sep">
+
+
+<h2 class="offset">Task 4:</b> Edge Flip</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In Part 4, I implemented the edge flip operation in HalfedgeMesh::flipEdge(EdgeIter e0) by rewiring pointers in the half-edge data structure without creating or deleting any mesh elements. Given an interior edge (e0), I first obtain its two halfedges h0 and h3 = h0->twin(), as well as the four surrounding halfedges (h1, h2 in the first triangle and h4, h5 in the second triangle). From these halfedges, I identify the four vertices of the local configuration (the two endpoints of the original edge and the two opposite vertices). If the edge is on the boundary, I immediately return without flipping.<br><br>
+
+To perform the flip, I change the “source” vertices of the two halfedges on the flipped edge so that the edge connects the two previously opposite vertices (i.e., replace the diagonal). Then I update the next pointers to form the two new face cycles (each face remains a 3-cycle of halfedges). After the connectivity is updated, I reassign the face pointer for the involved halfedges, and set halfedge() pointers for the two faces, the flipped edge, and the affected vertices to ensure every element still references a valid incident halfedge. Since an edge flip is purely local, the routine runs in constant time and only modifies the pointers in this one-ring neighborhood.<br><br>
+
+Debugging-wise, the most helpful trick was to save all relevant local iterators (halfedges, vertices, faces) into temporary variables before changing any pointers. Early on, I tried to rewire pointers “in place” and easily lost track of which halfedge still pointed where, which led to incorrect cycles and occasional crashes during mesh traversal. Keeping a consistent naming scheme (e.g., labeling the six halfedges around the two triangles) and double-checking the two new 3-cycles after rewiring made the process much more reliable. When something still looked wrong, repeatedly flipping the same edge (pressing F multiple times) was a quick sanity check: a correct implementation should remain stable and never create holes or break manifold connectivity.
+</p>
+
 <br><br>
 <hr class="sep">
+<div class="two-imgs">
+  <p class="img-caption">Original
+  <img src="imgs/4_1.png">
+  </p>
+  <p class="img-caption">flipEdge
+  <img src="imgs/4_2.png">
+  </p>
 
-<h2 class="offset">Task 3:</b>  Hierarchical Transforms</h2>
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
-  For this task, I modified <code>svg/transforms/robot.svg</code> to make the cubeman look like he is cheering. I kept the original SVG structure and relied on hierarchical transforms by updating only the arm group transforms, while leaving the existing translations and scales unchanged.
-  <br><br>
-  Concretely, I rotated the left arm group by <code>rotate(45)</code> and the right arm group by <code>rotate(-45)</code>. Because each arm is defined inside its own <code>&lt;g&gt;</code> group, applying a rotation at the group level rotates all polygons of that arm together around the group’s local coordinate frame. This demonstrates hierarchical transforms: the final pose results from composing the arm’s local rotation with its parent transforms (translation/scale) in the scene.
-  <br><br>
-  The result is that both arms lift diagonally upward, creating a clear “hands-up celebration” pose while preserving the rest of the robot’s body configuration.
-</p>
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
-<img src="imgs/task3.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
-  <br><br>
-</p>
-<hr class="sep">
+</div>
 
 
-<h2 class="offset">Task 4:</b> Barycentric Coordinates and Color Interpolation</h2>
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
-
-  <b>What barycentric coordinates mean.</b>
-  To interpolate values smoothly across a triangle, I use barycentric coordinates. For any point P inside triangle ABC, there exist weights (α, β, γ) such that:
-  <br>
-  <code>P = αA + βB + γC</code>, &nbsp;with&nbsp; <code>α + β + γ = 1</code>.
-  <br>
-  These weights describe how much P is “influenced” by each vertex. Near vertex A, α is large; on the edge BC (opposite A), α becomes 0.
-  <br><br>
-
-  <b>Using barycentric weights to interpolate color.</b>
-  If the triangle vertices have colors Color(A), Color(B), Color(C), then the color at P is computed by the same weighted combination:
-  <br>
-  <code>Color(P) = α * Color(A) + β * Color(B) + γ * Color(C)</code>.
-  <br>
-  This produces smooth gradients because the weights vary continuously across the triangle.
-  <br><br>
-
-  <b>How I compute one weight using signed heights (projection onto an edge normal).</b>
-</p>
-
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
-<img src="imgs/weight.jpg" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
-  <br><br>
-</p>
-
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
-  To compute beta (the weight for vertex A), I treat the opposite edge BC as a reference line. Let n be any normal vector perpendicular to BC (as shown in my sketch).
-  I measure “signed height” above the line BC by projecting a vector onto n.
-  <br><br>
-
-  Using B as a common origin, the signed height of point P above line BC is:
-  <br>
-  <code>h_P = (BP · n) / ||n||</code>
-  <br>
-  and the signed height of vertex A above the same line BC is:
-  <br>
-  <code>h_A = (BA · n) / ||n||</code>
-  <br><br>
-
-  Because the factor <code>||n||</code> cancels in the ratio, α can be computed as a simple height ratio:
-  <br>
-  <code>beta = h_P / h_A = (BP · n) / (BA · n)</code>
-  <br><br>
-
-
-  <b>Important detail:</b> BP and BA must be formed from the same origin (B) so both projections measure height relative to the same reference line BC. This makes the ratio consistent.
-  <br><br>
-
-  <b>Computing the other two weights.</b>
-  I compute β and γ the same way by choosing the opposite edges CA and AB as reference lines, respectively. In practice, once two weights are known, the third can also be obtained by:
-  
-  <code>γ = 1 - α - β</code>.
-
-<h3 class="offset">Result:</b></h3>
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;"> 
-<img src="imgs/task4.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
-  <br><br>
-</p>
-</p>
 
 <hr class="sep">
-<h2 class = 'offset'><b>Task 5:</b> Pixel Sampling for Texture Mapping (Nearest vs. Bilinear)</h2>
+<h2 class = 'offset'><b>Task 5:</b> Edge Split</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In Part 5, I implemented the edge split operation in HalfedgeMesh::splitEdge(EdgeIter e0) by inserting a new vertex at the midpoint of an interior edge and re-triangulating the two incident triangles into four triangles. I first obtain the two halfedges of the target edge (h0 and its twin h3) and immediately ignore boundary cases (either the edge itself or one of its adjacent faces is on the boundary). From the local neighborhood, I collect the six halfedges around the two triangles (h0..h5) and identify the four original vertices: the two endpoints of the edge being split and the two opposite vertices of the adjacent triangles.<br><br>
 
-  <b>Texture mapping as a sampling problem.</b>
-  A texture image stores colors over texture space (u, v). During rendering, we must assign a color to each screen sample covered by a triangle (the pixel center, or multiple sub-samples when supersampling is enabled). The key idea is <b>inverse mapping</b>: instead of iterating over texels, we iterate over sample points in screen space and map each sample back into texture space to fetch a texture color.
-  <br><br>
+To perform the split, I create the minimum set of new mesh elements required by the operation: one new vertex vm, two new faces (so the original two faces become four total), three new edges, and six new halfedges to represent the three new connections from vm to the surrounding vertices. I set vm->position to the midpoint of the original edge endpoints. Next, I establish the twin relationships for each pair of newly created halfedges, then rewire the next pointers so that each of the four resulting triangles has a consistent 3-cycle of halfedges. After the cycles are correct, I assign the face pointer of every involved halfedge to the appropriate face, and assign the edge pointer so that each edge owns one of its two halfedges.<br><br>
 
-  <b>How I implement texture mapping.</b>
-  For each screen sample point that lies inside a triangle, I first compute its barycentric weights with respect to the triangle vertices. I then use the same weights to interpolate the texture coordinates:
-  <br>
-  <code>uv(P) = α * uv0 + β * uv1 + γ * uv2</code>, with <code>α + β + γ = 1</code>.
-  <br>
-  After obtaining the interpolated (u, v) for that sample point, I fetch a texture color using the selected pixel sampling method (nearest or bilinear) and write the result into the supersample buffer. Importantly, I <b>interpolate UV first and then sample the texture once</b> at that UV location, rather than sampling only at the three vertex UVs.
-  <br><br>
+Finally, I update the halfedge() references for all affected vertices, faces, and edges so that each element still points to a valid incident halfedge. I also set the isNew flags to distinguish newly created elements from original ones, which is necessary later for Loop subdivision. The function returns the iterator to the newly inserted midpoint vertex vm, and I ensure vm->halfedge() points along the originally split edge as required.<br><br>
 
-  <b>Nearest-neighbor sampling.</b>
-  Nearest sampling converts the interpolated (u, v) into texture pixel coordinates and picks the single closest texel. This method is very fast (one texel lookup), but it often produces blocky artifacts and strong aliasing when the texture is magnified or when the texture contains high-frequency detail.
-  <br><br>
-
-  <b>Bilinear sampling.</b>
-  Bilinear sampling also converts (u, v) into texture pixel coordinates, but instead of choosing one texel, it fetches the four neighboring texels around the coordinate and blends them based on the fractional position inside the texel cell. Compared to nearest, bilinear produces smoother transitions and reduces abrupt “pixel stepping.” It does not fully eliminate aliasing under heavy minification (mipmapping is needed for that), but it typically looks noticeably smoother than nearest for the same UV location.
-  <br><br>
-
-  <b>When the difference is largest.</b>
-  The gap between nearest and bilinear is most visible when:
-  <br>
-  • the texture is magnified (zoomed in), so single-texel jumps become obvious, or
-  <br>
-  • the texture has sharp edges / high-frequency patterns (text, checkerboards, thin lines),
-  <br>
-  because nearest produces discontinuous changes while bilinear blends neighboring texels continuously.
-  <br><br>
-
-  <b>Relationship with supersampling (1 spp vs 16 spp).</b>
-  Increasing samples per pixel mainly smooths <b>geometric edges</b> by turning hard coverage decisions into partial coverage averages. Pixel sampling (nearest vs bilinear) mainly affects <b>how the texture itself is reconstructed</b> at a given UV. In my screenshots, bilinear tends to look smoother at both 1 spp and 16 spp, while 16 spp additionally reduces jaggies along triangle boundaries.
+Debugging-wise, the most important strategy was to treat the split as a purely local “rewiring” problem: list all elements in the two-triangle neighborhood before the split, list the elements after the split (four triangles), and then explicitly set every pointer (next/twin/vertex/edge/face and each element’s halfedge() reference). This reduced subtle pointer mistakes that can otherwise lead to broken cycles or crashes during mesh traversal.
+   
 </p>
 
+<br><br>
 
-<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
-  <b>Observations from the comparison.</b>
-  In the selected region (chosen using the pixel inspector), bilinear sampling preserves smoother transitions across texture features and avoids the blocky stepping that appears with nearest sampling. With 16 spp, triangle edges are also smoother due to better coverage estimation, but the difference between nearest and bilinear remains visible on the texture itself, especially around sharp texture boundaries and fine patterns.
-</p>
 
-</p>
-<div class="two-imgs">
-  <div class="img-block">
-    <p class="img-caption">Nearest & Sample rate: 1x1</p>
-    <img src="imgs/task5_nn_1x1.png" alt="">
-  </div>
-
-  <div class="img-block">
-    <p class="img-caption">Bilinear & Sample rate: 1x1</p>
-    <img src="imgs/task5_b_1x1.png" alt="">
-  </div>
+<div class="three-imgs">
+  <p class="img-caption">Original
+  <img src="imgs/5_1.png">
+  </p>
+  <p class="img-caption">Split
+  <img src="imgs/5_2.png">
+  </p>
+  <p class="img-caption">Split + Flip
+  <img src="imgs/5_3.png">
+  </p>
 </div>
-</p>
 
-</p>
-<div class="two-imgs">
-  <div class="img-block">
-    <p class="img-caption">Nearest & Sample rate: 4x4</p>
-    <img src="imgs/task5_nn_4x4.png" alt="">
-  </div>
 
-  <div class="img-block">
-    <p class="img-caption">Bilinear & Sample rate: 4x4</p>
-    <img src="imgs/task5_b_4x4.png" alt="">
-  </div>
-</div>
-</p>
-<br>
-<br>
-<hr class="sep">
 
-<h2 class = 'offset'><b>Task 6:</b> Level Sampling with Mipmaps </h2>
+<h2 class = 'offset'><b>Task 6:</b> Loop Subdivision for Mesh Upsampling </h2>
 <hr class="sep">
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+<b>Implementation Overview</b><br><br>
 
-  <b>What level sampling is.</b>
-  Pixel sampling (nearest vs. bilinear) decides how we reconstruct color <i>within a single mip level</i>.
-  Level sampling decides <i>which mip level</i> to sample from when the texture is scaled on screen. Mipmaps are a prefiltered pyramid of the texture
-  (level 0 is full resolution, level 1 is downsampled by 2, etc.). The goal is to reduce aliasing during minification by sampling from a level whose texel footprint better matches a screen pixel’s footprint.
-  <br><br>
+I implemented Loop subdivision using the recommended three-phase structure: precompute positions on the original mesh, modify connectivity via splits/flips, then commit the new positions.<br><br>
 
-  <b>How I estimate the mip level (get_level).</b>
-  In <code>RasterizerImp::rasterize_textured_triangle</code>, for each screen sample point P = (x, y) inside the triangle, I compute barycentric weights and interpolate:
-  <br>
-  • <code>uv</code> at P, stored as <code>sp.p_uv</code>
-  <br>
-  • <code>uv_dx</code> at (x + 1, y), stored as <code>sp.p_dx_uv</code>
-  <br>
-  • <code>uv_dy</code> at (x, y + 1), stored as <code>sp.p_dy_uv</code>
-  <br><br>
+<b>Precompute new positions for old vertices (Vertex::newPosition).</b><br><br>
+For every original (non-boundary) vertex \(v\), I compute its updated position using the Loop vertex rule based on its one-ring neighbors in the original mesh:<br><br>
+\[
+\mathbf{p}'=(1-nu)\mathbf{p}+u\sum_{i=1}^{n}\mathbf{p}_i,
+\]<br><br>
+where \(n\) is the vertex degree, \(\mathbf{p}\) is the original position, and \(\mathbf{p}_i\) are the original neighbor positions. I use \(u=\frac{3}{16}\) for \(n=3\), otherwise \(u=\frac{3}{8n}\). I mark all original vertices with <code>isNew = false</code>.<br><br>
 
-  Inside <code>Texture::get_level</code>, I form finite differences to approximate derivatives:
-  <br>
-  <code>du/dx, dv/dx</code> from <code>(sp.p_dx_uv - sp.p_uv)</code>
-  <br>
-  <code>du/dy, dv/dy</code> from <code>(sp.p_dy_uv - sp.p_uv)</code>
-  <br><br>
+<b>Precompute new positions for edge midpoints (Edge::newPosition).</b><br><br>
+For every original interior edge shared by two triangles, I gather the four vertices \((A,B,C,D)\), where \(A,B\) are the edge endpoints and \(C,D\) are the two opposite vertices across the adjacent faces. I compute the Loop edge rule:<br><br>
+\[
+\mathbf{p}_{new}=\tfrac{3}{8}(\mathbf{A}+\mathbf{B})+\tfrac{1}{8}(\mathbf{C}+\mathbf{D}),
+\]<br><br>
+and store it in <code>Edge::newPosition</code>. I also mark original edges as <code>isNew = false</code>.<br><br>
 
-  I then scale these UV differentials into texel space using the full-resolution texture size (width, height) and compute the footprint magnitude:
-  <br>
-  <code>Lx = sqrt( (du/dx * width)^2 + (dv/dx * height)^2 )</code>
-  <br>
-  <code>Ly = sqrt( (du/dy * width)^2 + (dv/dy * height)^2 )</code>
-  <br>
-  <code>L  = max(Lx, Ly)</code>
-  <br><br>
+<b>Split every original edge exactly once.</b><br><br>
+To avoid repeatedly splitting edges that are created during subdivision, I first copy the iterators of the original edges into a temporary list, then call <code>splitEdge</code> on each interior original edge. The newly inserted vertex \(m\) is marked with <code>isNew = true</code>, and I assign <code>m-&gt;newPosition = e-&gt;newPosition</code> from the precomputed value.<br><br>
 
-  Finally, the continuous mip level is:
-  <br>
-  <code>level = log2(L)</code>
-  <br>
-  and I clamp it to the valid range <code>[0, max_level]</code>.
-  <br><br>
+<b>Flip new edges that connect an old vertex and a new vertex.</b><br><br>
+After splitting, I iterate over edges and flip only those edges that are newly created and have exactly one endpoint marked <code>isNew</code>. This matches the standard “split-then-flip” rule for generating the 4-to-1 (4-1) subdivision connectivity, while avoiding flipping the new edges that lie along the boundaries of the subdivided triangles.<br><br>
 
-  <b>How I sample levels (Texture::sample).</b>
-  My <code>Texture::sample</code> supports three level sampling modes (controlled by the GUI toggle):
-  <br><br>
+<b>Commit positions.</b><br><br>
+Finally, I assign <code>v-&gt;position = v-&gt;newPosition</code> for every vertex, applying the precomputed smoothing to old vertices and the precomputed Loop positions to new vertices.<br><br>
 
-  • <b>L_ZERO:</b> always sample from level 0 (no mipmapping), identical to Part 5 behavior.
-  <br>
-  • <b>L_NEAREST:</b> round the computed continuous level to the nearest integer and sample only that mip level.
-  <br>
-  • <b>L_LINEAR:</b> sample from the two adjacent mip levels (floor(level) and ceil(level)) and linearly blend them by the fractional part.
-  <br><br>
+<b>Two techniques were especially helpful:</b><br><br>
 
-  After choosing the mip level(s), I apply the selected pixel sampling method:
-  <br>
-  <code>P_NEAREST</code> uses <code>sample_nearest(uv, level)</code>, and
-  <code>P_LINEAR</code> uses <code>sample_bilinear(uv, level)</code>.
-  <br><br>
+<b>Separation of geometry from topology:</b> I computed all <code>newPosition</code> values before splitting/flipping so that all weights are based on the original mesh neighborhood (otherwise later computations would accidentally use already-updated positions or a changed one-ring).
+<b>Store original edges before splitting:</b> I pushed all original <code>EdgeIter</code>s into a vector first, then iterated that vector to split. This prevents an infinite loop where newly created edges would also be split.
 
-  <b>Why L_ZERO and L_NEAREST look similar when zooming in.</b>
-  When the texture is magnified, the estimated footprint L is &lt; 1, so <code>log2(L)</code> becomes negative and the level clamps to 0. In that case, both L_ZERO and L_NEAREST end up sampling level 0, so they appear nearly identical. The differences between level sampling modes become most visible during minification (zooming out) and in high-frequency textures.
-  <br><br>
 
-  <b>Tradeoffs: speed, memory, and antialiasing power.</b>
-  <br>
-  • <b>Pixel sampling (nearest vs. bilinear):</b> affects local smoothness inside one mip level; bilinear costs more texture fetches but reduces “blocky stepping.”
-  <br>
-  • <b>Level sampling (mipmaps):</b> greatly reduces minification aliasing; building/storing mipmaps increases memory usage (~33% extra), and L_LINEAR costs extra sampling (two levels).
-  <br>
-  • <b>Samples per pixel (supersampling):</b> increases cost roughly proportional to sample rate, improves geometric edge antialiasing and helps a bit with texture aliasing, but mipmaps are still the key tool for heavy minification.
-  <br><br>
 
-  <b>Observations from my comparisons.</b>
-  With a high-frequency png texture, L_ZERO tends to show shimmering/moire patterns when zooming out because it samples only level 0. L_NEAREST reduces aliasing but can introduce “popping” when the chosen mip level changes discretely. L_LINEAR smooths the transition between levels by blending adjacent mipmaps, improving temporal stability during zooming.
+<b>Observations: Sharp Corners, Edges, and Smoothing</b><br><br>
+Loop subdivision quickly smooths sharp features. On meshes with sharp corners (e.g., a cube), the corners become round after even one iteration. This happens because the old vertex update rule is a weighted average of the one-ring neighborhood, which pulls corner vertices inward and smooths creases and corners rather than preserving them.<br><br>
+
+<b>Cube Asymmetry After Repeated Subdivision (Why It Happens)</b><br><br>
+When I repeatedly applied Loop subdivision to <code>dae/cube.dae</code>, I observed that the cube can become slightly asymmetric. The main reason is that Loop subdivision depends not only on geometry, but also on the mesh connectivity / triangulation. Each square face must be triangulated by choosing a diagonal. If the diagonal pattern across faces is not perfectly symmetric, then corresponding corners/edges do not have identical one-ring neighborhoods. Because both the edge rule (which depends on the opposite vertices \(C,D\)) and the vertex rule (which depends on the one-ring neighbors) are topology-dependent, a non-symmetric triangulation produces slightly different updates at locations that “should” be symmetric geometrically. Over multiple iterations, this small bias can persist and become noticeable as asymmetry.<br><br>
+
+<b>Pre-processing to Improve Symmetry</b><br><br>
+To reduce the asymmetry, I pre-processed the cube by splitting the face diagonals (i.e., splitting the “single diagonal” edges created by triangulation). This helps because it reduces the influence of any one diagonal choice dominating the local neighborhood and makes the connectivity around symmetric regions more uniform. With this pre-splitting, the one-ring neighborhoods at symmetric locations become closer to isomorphic, so the Loop weights are applied more consistently across the cube, alleviating the slight asymmetry in later subdivisions.<br><br>
 </p>
 
-</p>
-<div class="two-imgs">
-  <div class="img-block">
-    <p class="img-caption">P_NEAREST & L_ZERO</p>
-    <img src="imgs/l0_nearest.png" alt="">
-  </div>
-
-  <div class="img-block">
-    <p class="img-caption">P_LINEAR & L_ZERO</p>
-    <img src="imgs/l0_linear.png" alt="">
-  </div>
+<div class="three-imgs">
+  <p class="img-caption">Original
+  <img src="imgs/6_1.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/6_2.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/6_3.png">
+  </p>
 </div>
-</p>
 
-</p>
-<div class="two-imgs">
-  <div class="img-block">
-    <p class="img-caption">P_NEAREST & L_NEAREST</p>
-    <img src="imgs/ln_nearest.png" alt="">
-  </div>
-
-  <div class="img-block">
-    <p class="img-caption">P_LINEAR & L_NEAREST</p>
-    <img src="imgs/ln_linear.png" alt="">
-  </div>
+<div class="three-imgs">
+  <p class="img-caption">Split
+  <img src="imgs/6_4.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/6_5.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/6_6.png">
+  </p>
 </div>
-</p>
 
 
 </body>
