@@ -164,15 +164,20 @@
 </div>
   
   <h2 class="offset">Overview</h2>
-  <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
- This assignment is organized into two main themes: parametric surfaces (Bézier) and triangle mesh processing.<br><br>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+This assignment focused on building a physically based path tracer step by step, starting from basic ray generation and intersection, then accelerating rendering with a BVH, and finally extending the renderer to handle direct lighting, global illumination, and adaptive sampling. Across the different parts, the main goal was to understand how realistic images can be produced by tracing rays through a scene and estimating light transport with Monte Carlo methods.
+</p>
 
-In Parts 1–2, I implemented evaluation and visualization for Bézier curves/surfaces. The key technique is de Casteljau’s algorithm, which repeatedly performs linear interpolation between adjacent control points to generate lower-level point sets until a single point remains. That final point is the curve value at parameter 
-𝑡; applying the same idea in two parameter directions evaluates Bézier surfaces. This section helped me connect geometric interpolation with smooth shape generation and practice interactive debugging/visualization.<br><br>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In the first part, I implemented camera ray generation and primitive intersection for triangles and spheres. This established the core ray tracing pipeline: generating rays from image samples, finding the closest surface hit, and using surface normals for debugging and validation. In the second part, I implemented a bounding volume hierarchy (BVH) and bounding-box intersection, which made rendering much more efficient by reducing the number of primitive intersection tests needed for each ray.
+</p>
 
-In Section II (Parts 3–6), I worked with triangle meshes using the half-edge data structure for efficient connectivity traversal and local remeshing. In Part 3, I computed area-weighted vertex normals for Phong shading, producing smoother shading than flat per-face normals. In Parts 4–5, I implemented local remeshing operations (edge flip and edge split), with the main challenge being to correctly reassign half-edge pointers (next/twin/vertex/edge/face) to preserve manifold connectivity. Finally, in Part 6, I implemented Loop subdivision upsampling: I first computed target positions for old vertices and edge-split vertices using the Loop weighting rules, then split all original edges, flipped the appropriate new edges that connect an old vertex and a new vertex, and finally updated vertex positions. This pipeline converts a coarse mesh into a smoother, higher-resolution approximation.<br><br>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In the later parts, I moved from geometry and acceleration to light transport. I first implemented diffuse BSDF evaluation and direct illumination, comparing uniform hemisphere sampling with light importance sampling. Then I extended the renderer to support recursive global illumination with multiple bounces, including Russian Roulette for more efficient path termination. Finally, I implemented adaptive sampling so that pixels which converged quickly could stop early, while noisier regions continued receiving more samples.
+</p>
 
-Overall, the assignment ties together geometry (positions/normals) and topology (mesh connectivity): the first half focuses on continuous parametric evaluation, while the second half emphasizes discrete mesh traversal and local topology edits, culminating in a complete subdivision-and-smoothing workflow via Loop subdivision.
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Overall, this assignment tied together geometric visibility, acceleration structures, shading models, and stochastic light transport into a complete rendering pipeline. It showed how realistic images are not produced by a single technique, but by combining correct ray-scene intersection, efficient spatial data structures, physically motivated BSDFs, recursive illumination, and careful sampling strategies.
 </p>
 
   
