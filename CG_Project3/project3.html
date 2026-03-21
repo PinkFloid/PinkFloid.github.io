@@ -376,6 +376,34 @@ So overall, instead of checking every primitive in the scene, the BVH first chec
   <br><br>
 </p>
 
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+I compared rendering times with and without BVH on a couple of moderately complex scenes, and the difference was huge. For <code>cow.dae</code>, rendering went from about \(7.9\) seconds without BVH to about \(0.047\) seconds with BVH. For <code>bunny.dae</code>, it went from about \(60.3\) seconds down to about \(0.055\) seconds. The bigger scene benefited even more, which makes sense because without BVH every ray basically has to check every primitive, while with BVH the renderer can quickly skip large parts of the scene by testing bounding boxes first. So in practice, BVH changes rendering from something very slow and almost brute-force into something efficient enough to handle much more complicated geometry.
+</p>
+
+<br><br>
+<hr class="sep">
+<div class="two-imgs">
+  <p class="img-caption">
+  <img src="imgs/speed1.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/speed3.png">
+  </p>
+
+</div>
+
+<br><br>
+<hr class="sep">
+<div class="two-imgs">
+  <p class="img-caption">
+  <img src="imgs/speed2.png">
+  </p>
+  <p class="img-caption">
+  <img src="imgs/speed4.png">
+  </p>
+
+</div>
+
 <hr class="sep">
 <h2 class="offset">Part3: Direct Illumination</h2>
 <h2 class="offset">Task3.1:Diffuse BSDF</h2>
@@ -489,17 +517,9 @@ So for each sampled direction, I multiply the incoming emission, the BSDF value,
 This method works, but it can be pretty noisy, because most randomly chosen directions in the hemisphere do not actually hit a light source. As a result, many samples contribute zero, which makes convergence slower.
 </p>
 
-<br><br>
-<hr class="sep">
-<div class="two-imgs">
-  <p class="img-caption">-s 16 -l 8
-  <img src="imgs/CBbunny_H_16_8.png">
-  </p>
-  <p class="img-caption">-s 64 -l 32
-  <img src="imgs/CBbunny_H_64_32.png">
-  </p>
-
-</div>
+<img src="imgs/CBbunny_H_64_32.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
 
 
 
@@ -530,21 +550,38 @@ For each valid sample, I multiply the incoming radiance, the BSDF value, and the
 </p>
 
 
+<img src="imgs/bunny_64_32.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
 
-
+<h2 class="offset">Comparison</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Comparing the two direct lighting methods, light importance sampling produced noticeably cleaner results than uniform hemisphere sampling under the same general sampling budget. With uniform hemisphere sampling, many sampled directions do not actually point toward a light source, so a large fraction of samples contribute little or nothing, which makes the image noisier and slows convergence. This is especially visible in shadowed regions and around soft shadows from area lights. In contrast, importance sampling focuses directly on the light sources, so most samples are taken in directions that are actually relevant to direct illumination. As a result, the estimator has much lower variance, the soft shadows converge faster, and the overall image looks cleaner with fewer samples. Increasing the number of light rays from \(1\) to \(4\), \(16\), and \(64\) further reduces the noise in the soft shadow boundaries, with the biggest visual improvement happening at the lower sampling levels.
+</p>
 <br><br>
 <hr class="sep">
 <div class="two-imgs">
-  <p class="img-caption">-s 1 -l 1
-  <img src="imgs/bunny_1_1.png">
+  <p class="img-caption">l = 1
+  <img src="imgs/CBbunny_L1.png">
   </p>
-  <p class="img-caption">-s 64 -l 32
-  <img src="imgs/bunny_64_32.png">
+  <p class="img-caption">l = 4
+  <img src="imgs/CBbunny_L4.png">
   </p>
 
 </div>
 
 <br><br>
+<hr class="sep">
+<div class="two-imgs">
+  <p class="img-caption">l = 16
+  <img src="imgs/CBbunny_L16.png">
+  </p>
+  <p class="img-caption">l = 64
+  <img src="imgs/CBbunny_L64.png">
+  </p>
+
+</div>
+
 
 <hr class="sep">
 <h2 class="offset">Part4: Global Illumination</h2>
