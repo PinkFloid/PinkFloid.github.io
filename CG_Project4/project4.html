@@ -1,0 +1,525 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "$", right: "$", display: false }  // 建议加上单 $ 支持
+      ],
+      throwOnError: false
+    });
+  });
+</script>
+  <title>Black Theme</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000;       /* 全黑背景 */
+      color: #fff;            /* 全局白色文字 */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+    }
+
+    /* 链接与交互态 */
+    a { color: #7dc3ff; }
+    a:hover { color: #a8d7ff; }
+
+    /* 表单/按钮：避免白底刺眼 */
+    input, textarea, select, button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* 分隔线/边框在黑底上更柔和 */
+    hr, .border { border-color: #333; }
+
+    /* 代码块/卡片等容器 */
+    pre, code, .card {
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: .75rem;
+    }
+
+    .card {
+    margin: 16px 0;
+    padding: 24px;
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    .card p {
+    max-width: 95ch;           /* 约 65 个字符的行宽，更易读 */
+    line-height: 1.7;
+    margin: 0;
+    }
+
+    h1{ text-align:center; font-weight:700; font-size: 56px; margin:0; }
+    h2.subtitle{ text-align:center; font-weight:400; font-size: 56px; margin:0; }
+
+    p.indent {
+        margin-left: 8vw;   /* 你也可以用 2rem/40px 等固定值 */
+        max-width: 60ch;    /* 可选：控制段落宽度，读起来更舒服 */
+    }
+
+    hr.sep {
+        border: none;
+        border-top: 1px dashed #444;
+        margin: 24px 8vw;   /* 与段落左边对齐 */
+        }
+
+    .offset {
+    margin-left: 8vw;
+    width: calc(100% - 16vw); /* 和 hr 的左右留白一致，宽度也一样 */
+    }
+
+    
+
+    .three-imgs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 三列等宽 */
+      gap: 8px;
+      justify-items: center;   /* 居中对齐图片 */
+    }
+
+    .three-imgs img {
+      width: 100%;     /* 占满格子宽度 */
+      height: auto;    /* 高度自适应，保持比例 */
+      object-fit: contain;  /* 完整显示整个图片，不裁剪 */
+      border-radius: 2px;
+    }
+
+    .two-imgs {
+      display: flex;           /* 横排 */
+      justify-content: center; /* 居中 */
+      gap: 20px;               /* 图片间隙 */
+    }
+
+    .img-block {
+      width: 44%;              /* 跟原来图片宽度一样 */
+      display: flex;
+      flex-direction: column;  /* 文字在上，图在下 */
+      align-items: center;
+    }
+
+    .img-caption {
+      margin-bottom: 6px;      /* 文字和图片间隔 */
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .two-imgs img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .two-imgs-high-quality {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 40px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-high-quality img {
+    width: 64%;
+    height: 1600px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+    .two-imgs-height {
+    display: flex;                /* 横排 */
+    justify-content: center;      /* 居中 */
+    gap: 20px;                    /* 图片间隙 */
+    }
+
+    .two-imgs-height img {
+    width: 45%;
+    height: 1400px;
+    object-fit: cover;
+    border-radius: 8px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>Cloth Simulation and Shading</h1><br>
+
+     <hr class="sep">
+</div>
+  
+<h2 class="offset">Overview</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+This assignment focused on two major parts of computer graphics: physically based cloth simulation and real-time shader-based rendering. In the first half, I implemented a mass-spring cloth model, where a sheet of cloth is represented as a grid of point masses connected by springs. In the second half, I worked with GLSL shaders to implement several visual effects, including texture mapping, bump mapping, displacement mapping, and environment-mapped reflections.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In the cloth simulation part, I first built the cloth grid by generating evenly spaced point masses and connecting them using structural, shearing, and bending springs. These constraints allow the cloth to resist different types of deformation, such as stretching, diagonal shearing, and bending. I then implemented the simulation step by accumulating external forces, applying spring forces, using numerical integration to update point mass positions, and enforcing position constraints to keep the cloth behavior stable.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+I also extended the cloth simulator to handle collisions and self-collisions. For collisions with other objects, I implemented responses for spheres and planes so that the cloth could interact with the surrounding scene. For self-collision, I used spatial hashing to group nearby point masses and correct positions when masses became too close to each other. These additions made the cloth behave more realistically by preventing it from passing through objects or intersecting with itself.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In the shader part, I implemented different fragment and vertex shader effects to control how surfaces appear during rendering. Texture mapping used UV coordinates to sample colors from an image texture. Bump mapping used a height map to perturb surface normals, creating the illusion of small geometric detail without actually changing the mesh. Displacement mapping extended this idea by moving vertex positions according to the height map, causing the actual geometry to change. Finally, environment-mapped reflection used a cubemap to approximate mirror-like reflections from the surrounding environment.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Overall, this assignment tied together simulation and rendering. The cloth simulation portion showed how physical behavior can be modeled through point masses, springs, constraints, and collision handling, while the shader portion showed how surface appearance can be controlled through texture sampling, normal perturbation, geometric displacement, and reflection. Together, these parts demonstrated how realistic computer graphics depend on both the physical motion of objects and the visual models used to render their materials.
+</p>
+
+</div>
+<hr class="sep">
+<h2 class="offset">Part1: Cloth Simulation</h2>
+<h2 class="offset">Task1.1: Masses and springs</h2>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In this part, I implemented the cloth grid by generating point masses in row-major order and connecting them with different types of springs. Structural springs connect horizontally and vertically adjacent point masses, shearing springs connect diagonal neighbors, and bending springs connect point masses that are two steps apart. The screenshots below show the wireframe structure of <code>scene/pinned2.json</code> under different spring constraint settings.
+</p>
+
+<div class="three-imgs">
+  <p class="img-caption">Without any shearing constraint
+  <img src="imgs/without_shearing.png">
+  </p>
+  <p class="img-caption">only shearing constraint
+  <img src="imgs/only_shearing.png">
+  </p>
+  <p class="img-caption">all constraints
+  <img src="imgs/all_constraints.png">
+  </p>
+</div>
+
+
+<h2 class="offset">Task1.2: Simulation via numerical integration</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Increasing the spring constant <code>ks</code> makes the cloth behave more stiffly because the springs resist stretching more strongly. With a very low <code>ks</code>, the cloth stretches much more under gravity and forms a deeper sagging curve before coming to rest. With a high <code>ks</code>, the cloth keeps its shape better, stretches less, and the final sagging curve is much shallower.
+</p>
+
+<br><br>
+<div class="two-imgs">
+  <p class="img-caption">ks = 1000
+  <img src="imgs/ks=1000.png">
+  </p>
+  <p class="img-caption">ks = 10000
+  <img src="imgs/ks=10000.png">
+  </p>
+
+</div>
+
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Changing the density affects the mass of each point mass. Although gravity alone would produce the same acceleration regardless of mass, the cloth is also affected by spring forces. With a higher density, the cloth is heavier relative to the spring forces, so it sags more, deforms more noticeably, and responds more sluggishly. With a lower density, the springs can pull the cloth back more easily, so the cloth appears lighter and has less sagging.
+</p>
+
+<br><br>
+<div class="two-imgs">
+  <p class="img-caption">density = 10
+  <img src="imgs/density=10.png">
+  </p>
+  <p class="img-caption">density = 50
+  <img src="imgs/density=50.png">
+  </p>
+
+</div>
+
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Increasing damping causes the cloth to lose kinetic energy more quickly. With high damping, the cloth oscillates less and reaches its resting state faster. With low damping, the cloth continues swinging and bouncing for a longer time before settling down.
+</p>
+
+<br><br>
+<div class="two-imgs">
+  <p class="img-caption">damping = 0.15
+  <img src="imgs/damping=0.15.png">
+  </p>
+  <p class="img-caption">damping = 0.75
+  <img src="imgs/damping=0.75.png">
+  </p>
+
+</div>
+
+<hr class="sep">
+
+
+<h2 class="offset">Task 1.3:</b>  Area-Weighted Vertex Normals</h2>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+For sphere collision, I first check whether the point mass is inside the sphere by comparing the distance from the point mass to the sphere center with the sphere radius. If the distance is smaller than the radius, the point mass has penetrated the sphere. I then compute the closest point on the sphere surface along the direction from the sphere center to the point mass. This gives the target tangent point on the sphere surface. The correction vector moves the point mass from its previous position toward this surface point, scaled by <code>1 - friction</code> so that friction reduces the amount of movement along the correction direction.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+For plane collision, I determine whether a point mass crosses the plane during the current time step. I compute the signed distance of both the previous position and the current position to the plane using the dot product with the plane normal. If the two signed distances have opposite signs, then the point mass has moved from one side of the plane to the other, so a collision occurred.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+After detecting a crossing, I compute the intersection point between the point mass trajectory and the plane. This is done by solving for the interpolation parameter along the movement direction from the previous position to the current position. I then move the point mass to a corrected position slightly offset from the plane surface by <code>SURFACE_OFFSET</code>, choosing the offset direction based on which side of the plane the point mass came from. Finally, I apply friction by scaling the correction vector by <code>1 - friction</code>.
+</p>
+<hr class="sep">
+
+<h3 class="offset">Effect of Spring Constant on Sphere Collision</h3>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+With <code>ks = 500</code>, the cloth is much softer and sags significantly more. It stretches more easily under gravity, wraps around the sphere more closely, and the two sides droop lower compared to the default setting.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+With <code>ks = 5000</code>, the cloth shows a more balanced behavior. It deforms around the sphere naturally without becoming too loose or too stiff, producing a reasonable middle ground between sagging and structural resistance.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+With <code>ks = 50000</code>, the cloth becomes very stiff and stays much wider across the sphere. Because the spring forces are stronger, the cloth resists deformation more, so the side sagging appears less natural and the cloth does not wrap around the sphere as closely.
+</p>
+
+<div class="three-imgs">
+  <p class="img-caption">ks=500
+  <img src="imgs/sphere_ks=500.png">
+  </p>
+  <p class="img-caption">ks=5000
+  <img src="imgs/sphere_ks=5000.png">
+  </p>
+  <p class="img-caption">ks=50000
+  <img src="imgs/sphere_ks=50000.png">
+  </p>
+</div>
+<hr class="sep">
+
+</p>
+<img src="imgs/plane.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+
+<h2 class="offset">Task 1.4:</b> Handling self-collisions</h2>
+<h3 class="offset">Self-Collision Implementation</h3>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+For self-collision, I used spatial hashing to avoid checking every pair of point masses directly. I first divided the space into 3D grid cells and used a hash function to assign each point mass to a cell based on its current position. Then I built a spatial map where each hash value stores the point masses that fall into the same grid cell.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+When handling self-collision for a point mass, I look up the point masses in the same spatial cell and check their distances from the current point mass. If another point mass is closer than <code>2 * thickness</code>, I compute a correction vector that pushes the current point mass away from the other mass until the two masses are separated by at least the allowed thickness distance.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+If multiple nearby point masses cause collisions, I average all of their correction vectors. Finally, I divide the correction by the number of simulation steps before applying it to the point mass. This keeps the self-collision response stable across smaller simulation substeps and prevents the cloth from correcting too aggressively in a single step.
+</p>
+
+<div class="three-imgs">
+  <p class="img-caption">start
+  <img src="imgs/default_start.png">
+  </p>
+  <p class="img-caption">self collision
+  <img src="imgs/default_middle.png">
+  </p>
+  <p class="img-caption">end
+  <img src="imgs/default_end.png">
+  </p>
+</div>
+<hr class="sep">
+
+
+<h3 class="offset">Effect of Density and Spring Constant</h3>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Changing density affected how quickly motion and self-collision responses propagated through the cloth. With lower density, each point mass was lighter, so the same spring and collision forces produced larger accelerations. As a result, the cloth reacted more quickly, and the folding or self-collision effects spread faster across the cloth. With higher density, the cloth felt heavier and responded more slowly, so the motion propagated less quickly and the folding process appeared more sluggish.
+</p>
+
+<div class="three-imgs">
+  <p class="img-caption">ds = 10 self collision
+  <img src="imgs/ds=0.10_start.png">
+  </p>
+  <p class="img-caption">ds = 15 self collision
+  <img src="imgs/default_middle.png">
+  </p>
+  <p class="img-caption">ds = 25 self collision
+  <img src="imgs/ds=25_start.png">
+  </p>
+</div>
+<hr class="sep">
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+With a lower <code>ks</code>, the cloth behaves more softly because the springs are weaker. During self-collision, the cloth stretches and collapses more easily, producing looser and deeper folds. The cloth has less structural resistance, so the folded shape appears more relaxed and less stiff.
+</p>
+
+<div class="three-imgs">
+  <p class="img-caption">ks = 2000 self collision
+  <img src="imgs/ks2000colli.png">
+  </p>
+  <p class="img-caption">ks = 2500 self collision
+  <img src="imgs/default_middle.png">
+  </p>
+  <p class="img-caption">ks = 20000 self collision
+  <img src="imgs/ks20000_colli.png">
+  </p>
+</div>
+<hr class="sep">
+
+
+
+
+
+<h2 class="offset">Part2: Shaders</h2>
+<hr class="sep">
+<h3 class="offset">Shader Program</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+A shader program is a small program that runs on the GPU to control how geometry is transformed and how pixels are colored. In this assignment, the vertex shader first processes each vertex by transforming its position and passing information such as normals, UV coordinates, and tangents to the next stage. After rasterization, these values are interpolated across the surface, and the fragment shader uses them to compute the final color of each fragment.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+The vertex and fragment shaders work together to create lighting and material effects. The vertex shader provides the geometric information needed for rendering, while the fragment shader uses this information along with light positions, camera position, textures, and surface normals to determine how the material should appear. For example, a fragment shader can sample a texture using UV coordinates, compute lighting from a normal vector, or create reflective effects using a cubemap.
+</p>
+
+
+
+<h3 class="offset">Blinn-Phong Shading</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+The Blinn-Phong shading model combines three main lighting components: ambient, diffuse, and specular lighting. The ambient component gives the object a small amount of base illumination so that surfaces are not completely black. The diffuse component depends on the angle between the light direction and the surface normal, making surfaces brighter when they face the light directly. The specular component creates shiny highlights based on the viewing direction, the light direction, and the surface normal.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+This model is not a fully physically accurate lighting model, but it is efficient and produces visually reasonable results. By combining ambient light, diffuse reflection, and specular highlights, Blinn-Phong gives a simple approximation of how light interacts with a surface while remaining fast enough for real-time rendering.
+</p>
+
+<br><br>
+<div class="two-imgs">
+  <p class="img-caption">ambient = 0.2
+  <img src="imgs/ambient_only.png">
+  </p>
+  <p class="img-caption">diffuse only
+  <img src="imgs/diffuse_Only.png">
+  </p>
+
+</div>
+
+<br><br>
+<div class="two-imgs">
+  <p class="img-caption">specular only
+  <img src="imgs/spec_only.png">
+  </p>
+  <p class="img-caption">full Blinn-Phong
+  <img src="imgs/full.png">
+  </p>
+
+</div>
+
+<h3 class="offset">Texture Mapping</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+For texture mapping, the fragment shader uses the interpolated UV coordinates to sample a 2D texture. The sampled texture color is then used as the fragment color. This allows an image texture to be mapped onto the surface of the cloth or object, making the material appearance more detailed than using a single constant color.
+</p>
+
+</p>
+<img src="imgs/my_texture.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
+
+<h3 class="offset">Bump Mapping and Displacement Mapping</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Bump mapping uses a height texture to perturb the surface normals in the fragment shader. This changes the way the surface reacts to light, creating the illusion of bumps and surface detail. However, the actual mesh geometry does not change, so the silhouette and vertex positions remain the same.
+</p>
+
+<br>
+<div class="two-imgs">
+  <p class="img-caption">bump on cloth
+  <img src="imgs/bump_cloth.png">
+  </p>
+  <p class="img-caption">bump of sphere
+  <img src="imgs/bump_shpere.png">
+  </p>
+
+</div>
+<br>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Displacement mapping also uses a height texture, but it modifies the actual vertex positions in the vertex shader. Instead of only changing the lighting response, displacement mapping changes the real geometry of the surface. As a result, the object can visibly deform, and its silhouette can change depending on the height map.
+</p>
+
+<br>
+<div class="two-imgs">
+  <p class="img-caption">displacement initial
+  <img src="imgs/disp_1.png">
+  </p>
+  <p class="img-caption">displacement result
+  <img src="imgs/disp2.png">
+  </p>
+
+</div>
+<br>
+
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+In my renders, the difference between bump mapping and displacement mapping was clear. Bump mapping mainly affected the lighting on the surface, while displacement mapping produced stronger geometric changes because the vertices were actually moved. With the sand texture I used, the bump effect was relatively subtle, but the displacement result caused the sphere surface to visibly deform.
+</p>
+
+
+<h3 class="offset">Effect of Sphere Mesh Coarseness</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Changing the sphere mesh coarseness affects how well the geometry can represent displacement. With a coarse sphere mesh, there are fewer vertices available to move, so displacement can look less smooth and the edge or silhouette of the sphere may appear less accurate. With a finer sphere mesh, there are more vertices, so the displaced shape can follow the height texture more smoothly and the geometry appears more correct.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+Bump mapping is less sensitive to mesh coarseness because it does not actually move vertices. It only changes normals during shading, so the overall geometry stays the same. Displacement mapping is more affected by mesh resolution because its result depends directly on how many vertices the mesh has. A higher-resolution sphere can show smoother and more detailed displacement, while a lower-resolution sphere may produce rougher or more blocky deformation.
+</p>
+
+<br>
+<div class="two-imgs">
+  <p class="img-caption">-o 16 -a 16 bump
+  <img src="imgs/bump_16.png">
+  </p>
+  <p class="img-caption">-o 128 -a 128 bump
+  <img src="imgs/bump_128.png">
+  </p>
+
+</div>
+<br>
+
+<br>
+<div class="two-imgs">
+  <p class="img-caption">-o 16 -a 16 displacement
+  <img src="imgs/dis_16.png">
+  </p>
+  <p class="img-caption">-o 128 -a 128 displacement
+  <img src="imgs/dis_128.png">
+  </p>
+
+</div>
+<br>
+
+<h3 class="offset">Mirror Shader</h3>
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+The mirror shader computes a reflection direction using the camera direction and the surface normal. It then samples a cubemap texture along that reflected direction. This approximates mirror-like reflection by using the environment map as the reflected scene, making the cloth and sphere appear reflective.
+</p>
+
+<br>
+<div class="two-imgs">
+  <p class="img-caption">mirror on cloth
+  <img src="imgs/mirror_cloth.png">
+  </p>
+  <p class="img-caption">mirror on sphere
+  <img src="imgs/mirror_sphere.png">
+  </p>
+
+</div>
+<br>
+
+
+</body>
+</html>
