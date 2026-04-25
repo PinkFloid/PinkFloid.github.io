@@ -259,10 +259,15 @@ Increasing damping causes the cloth to lose kinetic energy more quickly. With hi
 
 </div>
 
-<hr class="sep">
+
+<h2 class="offset">scene/pinned4.json</h2>
+</p>
+<img src="imgs/final4.png" alt="" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+  <br><br>
+</p>
 
 
-<h2 class="offset">Task 1.3:</b>  Area-Weighted Vertex Normals</h2>
+<h2 class="offset">Task 1.3:</b>Handling collisions with other objects</h2>
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
 For sphere collision, I first check whether the point mass is inside the sphere by comparing the distance from the point mass to the sphere center with the sphere radius. If the distance is smaller than the radius, the point mass has penetrated the sphere. I then compute the closest point on the sphere surface along the direction from the sphere center to the point mass. This gives the target tangent point on the sphere surface. The correction vector moves the point mass from its previous position toward this surface point, scaled by <code>1 - friction</code> so that friction reduces the amount of movement along the correction direction.
 </p>
@@ -358,6 +363,10 @@ Changing density affected how quickly motion and self-collision responses propag
 
 <p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
 With a lower <code>ks</code>, the cloth behaves more softly because the springs are weaker. During self-collision, the cloth stretches and collapses more easily, producing looser and deeper folds. The cloth has less structural resistance, so the folded shape appears more relaxed and less stiff.
+</p>
+
+<p class="offset" style="letter-spacing:0.2px; word-spacing:0.3px; line-height:1.9;">
+With a higher <code>ks</code>, the cloth resists stretching more strongly and keeps its shape better during self-collision. The folds appear broader and stiffer, and the cloth collapses less compared to the lower <code>ks</code> case.
 </p>
 
 <div class="three-imgs">
