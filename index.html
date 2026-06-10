@@ -1,34 +1,348 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Portfolio</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 32px;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="description" content="Portfolio of computer vision and computer graphics projects — image processing, panorama stitching, NeRF, diffusion models, rasterization, path tracing and cloth simulation." />
+  <title>PinkFloid — Computer Vision &amp; Graphics Portfolio</title>
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --card: #121214;
+      --border: #232326;
+      --border-hover: #3d3d42;
+      --text: #ededee;
+      --muted: #9b9ba1;
+      --faint: #6b6b72;
+      --accent: #7dc3ff;
+    }
 
-        h1{
-            font-size: 80px;
-        }
+    * { box-sizing: border-box; }
 
-        a{
-            font-size: 32px;
-        }
-    </style>
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+                   Arial, "Noto Sans", "PingFang SC", "Microsoft Yahei", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- top bar ---------- */
+    header.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0;
+    }
+
+    .wordmark {
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    nav.links { display: flex; gap: 22px; }
+
+    nav.links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color .15s ease;
+    }
+
+    nav.links a:hover { color: var(--text); }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 64px 0 24px; }
+
+    .hero h1 {
+      font-size: clamp(34px, 6vw, 54px);
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      margin: 0 0 20px;
+    }
+
+    .hero h1 .dim { color: var(--faint); }
+
+    .hero p {
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .hero p a { color: var(--accent); text-decoration: none; }
+    .hero p a:hover { text-decoration: underline; }
+
+    /* ---------- sections ---------- */
+    section { padding: 56px 0 8px; }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section-head h2 {
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .section-head .count { color: var(--faint); font-size: 14px; }
+
+    .section-head .rule {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ---------- project grid ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .18s ease, transform .18s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .thumb {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .25s ease;
+    }
+
+    .card:hover .thumb img { transform: scale(1.035); }
+
+    .card-body { padding: 16px 18px 18px; }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 16.5px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .card p {
+      margin: 0 0 12px;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      font-size: 11.5px;
+      color: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 9px;
+      white-space: nowrap;
+    }
+
+    /* ---------- footer ---------- */
+    footer {
+      margin-top: 72px;
+      border-top: 1px solid var(--border);
+      padding: 28px 0 40px;
+      color: var(--faint);
+      font-size: 13.5px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .card, .thumb img { transition: none; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to My Portfolio!</h1>
-    <br><br><br><br><br><br><br><br><br><br>
-    <a href="Project0/project0.html">Computer Vision Project 0</a><br><br><br>
-    <a href="Project1/project1.html">Computer Vision Project 1 </a><br><br><br>
-    <a href="Project2/project2.html">Computer Vision Project 2 </a><br><br><br>
-    <a href="Project3/project3.html">Computer Vision Project 3 </a><br><br><br>
-    <a href="Project4/project4.html">Computer Vision Project 4 </a><br><br><br>
-    <a href="Project5/project5.html">Computer Vision Project 5 </a><br><br><br>
+  <div class="wrap">
 
-    <a href="CG_Project1/project1.html">Computer Graphic Project 1 </a><br><br><br>
-    <a href="CG_Project2/project2.html">Computer Graphic Project 2 </a><br><br><br>
-    <a href="CG_Project3/project3.html">Computer Graphic Project 3 </a><br><br><br>
+    <header class="top">
+      <a class="wordmark" href="./">PinkFloid</a>
+      <nav class="links">
+        <a href="#vision">Vision</a>
+        <a href="#graphics">Graphics</a>
+        <a href="https://github.com/PinkFloid">GitHub</a>
+      </nav>
+    </header>
+
+    <div class="hero">
+      <!-- Replace "PinkFloid" with your real name if you prefer -->
+      <h1>Computer vision &amp;<br />computer graphics<span class="dim">.</span></h1>
+      <p>
+        Hi, I'm <a href="https://github.com/PinkFloid">PinkFloid</a>.
+        I like building visual things from first principles — aligning century-old
+        glass-plate photographs, stitching panoramas, fitting neural radiance fields,
+        sampling diffusion models, and writing a rasterizer, a path tracer and a
+        cloth simulator from scratch. Ten projects are documented below.
+      </p>
+    </div>
+
+    <section id="vision">
+      <div class="section-head">
+        <h2>Computer Vision</h2>
+        <span class="count">6 projects</span>
+        <span class="rule"></span>
+      </div>
+      <div class="grid">
+
+        <a class="card" href="Project5/project5.html">
+          <div class="thumb"><img src="assets/thumbs/cv5_diffusion.jpg" alt="Image generated with a diffusion model: a robot barista making coffee" /></div>
+          <div class="card-body">
+            <h3>Diffusion Models</h3>
+            <p>Denoising and sampling loops with DeepFloyd — CFG, inpainting, visual anagrams and hybrid images — plus a DDPM UNet trained from scratch on MNIST.</p>
+            <div class="tags"><span class="tag">DDPM</span><span class="tag">UNet</span><span class="tag">PyTorch</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="Project4/project4.html">
+          <div class="thumb"><img src="assets/thumbs/cv4_nerf.jpg" alt="Novel view of a fox rendered by a neural radiance field" /></div>
+          <div class="card-body">
+            <h3>Neural Radiance Fields</h3>
+            <p>Fitting a neural field to a single image, then a full NeRF — ray sampling, volume rendering and novel-view synthesis on a multi-view scene.</p>
+            <div class="tags"><span class="tag">NeRF</span><span class="tag">Volume rendering</span><span class="tag">PyTorch</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="Project3/project3.html">
+          <div class="thumb"><img src="assets/thumbs/cv3_mosaic.jpg" alt="Automatically stitched panorama of a house" /></div>
+          <div class="card-body">
+            <h3>Image Warping &amp; Mosaicing</h3>
+            <p>Homography estimation and image warping, then fully automatic panorama stitching with Harris corners, ANMS, feature matching and RANSAC.</p>
+            <div class="tags"><span class="tag">Homography</span><span class="tag">RANSAC</span><span class="tag">Panorama</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="Project2/project2.html">
+          <div class="thumb"><img src="assets/thumbs/cv2_blending.jpg" alt="Multi-resolution blend of the Autobots and Decepticons logos" /></div>
+          <div class="card-body">
+            <h3>Filters, Frequencies &amp; Blending</h3>
+            <p>2D convolution from scratch, edge extraction, unsharp masking, hybrid images, and seamless multi-resolution blending with Laplacian pyramids.</p>
+            <div class="tags"><span class="tag">Convolution</span><span class="tag">Laplacian pyramid</span><span class="tag">NumPy</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="Project1/project1.html">
+          <div class="thumb"><img src="assets/thumbs/cv1_colorize.jpg" alt="Colorized Prokudin-Gorskii photograph of the Emir of Bukhara" /></div>
+          <div class="card-body">
+            <h3>Images of the Russian Empire</h3>
+            <p>Colorizing Prokudin-Gorskii glass-plate negatives by aligning the three channel exposures with coarse-to-fine image pyramids and edge-based matching.</p>
+            <div class="tags"><span class="tag">Image alignment</span><span class="tag">Pyramids</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="Project0/project0.html">
+          <div class="thumb"><img src="assets/thumbs/cv0_camera.jpg" alt="Perspective experiment photo of a water bottle" /></div>
+          <div class="card-body">
+            <h3>Becoming Friends with Your Camera</h3>
+            <p>Warm-up experiments with a real camera: focal length vs. distance, perspective distortion, and the dolly zoom effect.</p>
+            <div class="tags"><span class="tag">Perspective</span><span class="tag">Photography</span></div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <section id="graphics">
+      <div class="section-head">
+        <h2>Computer Graphics</h2>
+        <span class="count">4 projects</span>
+        <span class="rule"></span>
+      </div>
+      <div class="grid">
+
+        <a class="card" href="CG_Project4/project4.html">
+          <div class="thumb"><img src="assets/thumbs/cg4_cloth.jpg" alt="Bump-mapped cloth draped over a sphere" /></div>
+          <div class="card-body">
+            <h3>Cloth Simulation &amp; Shading</h3>
+            <p>A mass-spring cloth simulator with Verlet integration, self-collision and object collision, shaded with GLSL: diffuse, Blinn-Phong, texture, bump and mirror.</p>
+            <div class="tags"><span class="tag">Simulation</span><span class="tag">GLSL</span><span class="tag">C++</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="CG_Project3/project3.html">
+          <div class="thumb"><img src="assets/thumbs/cg3_pathtracer.jpg" alt="Path-traced Stanford bunny in a Cornell box" /></div>
+          <div class="card-body">
+            <h3>Path Tracer</h3>
+            <p>Physically-based rendering from scratch: ray-scene intersection, BVH acceleration, direct and global illumination, and adaptive sampling.</p>
+            <div class="tags"><span class="tag">Ray tracing</span><span class="tag">BVH</span><span class="tag">C++</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="CG_Project2/project2.html">
+          <div class="thumb"><img src="assets/thumbs/cg2_mesh.jpg" alt="Utah teapot mesh in the half-edge mesh editor" /></div>
+          <div class="card-body">
+            <h3>Bezier Curves &amp; Mesh Editing</h3>
+            <p>De Casteljau evaluation for curves and surfaces, plus a half-edge mesh editor with edge flips, edge splits and Loop subdivision.</p>
+            <div class="tags"><span class="tag">Half-edge</span><span class="tag">Subdivision</span><span class="tag">C++</span></div>
+          </div>
+        </a>
+
+        <a class="card" href="CG_Project1/project1.html">
+          <div class="thumb"><img src="assets/thumbs/cg1_raster.jpg" alt="Rasterized image with a pixel inspector view" /></div>
+          <div class="card-body">
+            <h3>Rasterizer</h3>
+            <p>A software rasterizer: triangle rasterization with supersampling, transforms, barycentric interpolation, and texture mapping with mip-mapping.</p>
+            <div class="tags"><span class="tag">Rasterization</span><span class="tag">Texture mapping</span><span class="tag">C++</span></div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 PinkFloid</span>
+      <a href="https://github.com/PinkFloid">github.com/PinkFloid</a>
+    </footer>
+
+  </div>
 </body>
 </html>
